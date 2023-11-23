@@ -1,0 +1,31 @@
+version: '3'
+services:
+  backend:
+    environment:
+      - DB_HOST=db
+    build:
+      context: ./Backend/
+      dockerfile: ./Docker/local/Dockerfile
+    restart: always
+    command: /bin/bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    ports:
+      - 8000:8000
+    volumes:
+      - ./Backend/:/code
+    depends_on:
+      - db
+    networks:
+      - my_network
+  db:
+    image: postgres
+    restart: always
+    env_file: Backend/.env
+    ports:
+      - 5433:5432
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    driver: bridge
+
