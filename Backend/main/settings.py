@@ -21,11 +21,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS=['http://localhost:8000']
+
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_WHITELIST = (
+       'http://localhost:8000',
+
+)
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -36,7 +41,7 @@ APP_DIR = ROOT_DIR / "core_apps"
 
 # Application definition
 
-THIRD_PARTY_APPS = []
+THIRD_PARTY_APPS = ['corsheaders',]
  
 DJANGO_APPS = [
     "django.contrib.admin",
@@ -55,6 +60,7 @@ LOCAL_APPS = [
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -91,8 +97,8 @@ import environ
 import os
 env = environ.Env()
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
-SECRET_KEY = env("SECRET_KEY")
 
+SECRET_KEY = env("SECRET_KEY")
 
 DATABASES = {
     'default': {
@@ -100,7 +106,8 @@ DATABASES = {
         'NAME': env("DB_NAME"),
         'USER': env("DB_USER"),
         'PASSWORD': env("DB_PASSWORD"),
-        'HOST': env("DB_HOST"),
+        # 'HOST': env("DB_HOST"),
+        'HOST': 'localhost',
         'PORT': env("DB_PORT"),
     }
 }
