@@ -15,7 +15,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 
 
@@ -24,25 +23,23 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS=['http://localhost:8000']
+ALLOWED_HOSTS = ['*']
 
-CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_ALLOW_ALL = True
 CORS_ORIGIN_WHITELIST = (
-       'http://localhost:8000',
+    'http://localhost:8000',
 
 )
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 ROOT_DIR = Path(__file__).resolve().parent.parent.parent
-
 
 APP_DIR = ROOT_DIR / "core_apps"
 
 # Application definition
 
-THIRD_PARTY_APPS = ['corsheaders',]
- 
+THIRD_PARTY_APPS = ['corsheaders', ]
+
 DJANGO_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -90,11 +87,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "main.wsgi.application"
 
-
 # Database
 
 import environ
 import os
+
 env = environ.Env()
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
@@ -106,12 +103,11 @@ DATABASES = {
         'NAME': env("DB_NAME"),
         'USER': env("DB_USER"),
         'PASSWORD': env("DB_PASSWORD"),
-        # 'HOST': env("DB_HOST"),
-        'HOST': 'localhost',
+        'HOST': env("DB_HOST"),
+        # 'HOST': 'localhost',
         'PORT': env("DB_PORT"),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -131,7 +127,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -142,7 +137,6 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
