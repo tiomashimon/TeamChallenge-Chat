@@ -1,3 +1,13 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
-# Create your models here.
+
+class Settings(models.Model):
+    is_dark_mode = models.BooleanField(default=False)
+    is_show_notifications = models.BooleanField(default=True)
+    language = models.CharField(max_length=255, default="ua")
+
+
+class User(AbstractUser):
+    username = models.CharField(max_length=255, unique=False)
+    settings = models.OneToOneField(Settings, on_delete=models.CASCADE, default=None)

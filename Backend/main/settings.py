@@ -24,7 +24,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS=['http://localhost:8000']
+ALLOWED_HOSTS = [
+    "http://localhost:8000",
+    "0.0.0.0"
+]
 
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = (
@@ -106,8 +109,8 @@ DATABASES = {
         'NAME': env("DB_NAME"),
         'USER': env("DB_USER"),
         'PASSWORD': env("DB_PASSWORD"),
-        # 'HOST': env("DB_HOST"),
-        'HOST': 'localhost',
+        'HOST': env("DB_HOST"),
+        # 'HOST': 'localhost',
         'PORT': env("DB_PORT"),
     }
 }
@@ -131,6 +134,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = "core_apps.user.User"
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
