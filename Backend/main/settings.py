@@ -42,7 +42,7 @@ ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 
 APP_DIR = ROOT_DIR / "core_apps"
 
-# Application definition
+# Application definition1
 
 THIRD_PARTY_APPS = ['corsheaders',]
  
