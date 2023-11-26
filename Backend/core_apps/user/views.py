@@ -10,14 +10,14 @@ import random
 import string
 from rest_framework.viewsets import ModelViewSet
 
-from .models import User, Settings
-from .serializers import UserSerializer, SettingsSerializer
+from .models import User
+from .serializers import UserSerializer
 
 
-class RegistrationView(ModelViewSet):
+class RegistrationView(ModelViewSet, SuccessMessageMixin):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    # success_message = "Your profile was created successfully"
+    success_message = "Your profile was created successfully"
 
 
 

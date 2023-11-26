@@ -15,11 +15,10 @@ class SettingsSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     settings = SettingsSerializer()
     username = serializers.CharField(read_only=True)
-    password = serializers.CharField(read_only=True)
 
     class Meta:
         model = User
-        fields = ['id', 'nickname', 'username', 'password', 'settings']
+        fields = ['id', 'nickname', 'username', 'settings']
 
     def create(self, validated_data):
         settings_data = validated_data.pop('settings', None)
@@ -30,8 +29,7 @@ class UserSerializer(serializers.ModelSerializer):
         )
 
         if settings_data:
-            settings_instance = Settings.objects.create(**settings_data)
-            user.settings = settings_instance
+            user.settings = Settings.objects.create(**settings_data)
 
         user.set_password(password)
         user.save()
