@@ -24,16 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    "http://localhost:8000",
-    "0.0.0.0"
-]
-
-CORS_ORIGIN_ALLOW_ALL = False
-CORS_ORIGIN_WHITELIST = (
-       'http://localhost:8000',
-
-)
+ALLOWED_HOSTS=['*']
+2
+CORS_ORIGIN_ALLOW_ALL = True
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -42,7 +35,7 @@ ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 
 APP_DIR = ROOT_DIR / "core_apps"
 
-# Application definition
+# Application definition1
 
 THIRD_PARTY_APPS = ['corsheaders',]
  
