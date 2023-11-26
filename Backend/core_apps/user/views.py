@@ -22,14 +22,15 @@ class RegistrationView(SuccessMessageMixin, CreateView):
             return context
 
 
-    def generate_random_password(self):
+    def generate_random(self):
         password_length = 8
         characters = string.ascii_letters + string.digits
         return ''.join(random.choice(characters) for i in range(password_length))
     
     def form_valid(self, form):
 
-        form.instance.set_password(self.generate_random_password())
+        form.instance.username = self.generate_random()
+        form.instance.set_password(self.generate_random())
 
         user = form.save()
 

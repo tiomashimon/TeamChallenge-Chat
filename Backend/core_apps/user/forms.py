@@ -8,4 +8,4 @@ from phonenumber_field.modelfields import PhoneNumberField
 class UserRegistrationForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['username',]
+        fields = ['nickname',]
