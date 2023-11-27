@@ -45,3 +45,14 @@ class UserSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
+
+
+# class UserDetailView(DetailView):
+#     model = User
+#     context_object_name = 'user'
+#     template_name = 'users/user_detail.html'
+#
+#     def get_context_data(self, **kwargs):
+#         post = super().get_context_data(**kwargs)
+#         post['posts'] = Post.objects.filter(user=post['user'])
+#         return post

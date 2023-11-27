@@ -9,16 +9,22 @@ from django.contrib.auth import login
 import random
 import string
 from rest_framework.viewsets import ModelViewSet
-
+from rest_framework.response import Response
 from .models import User
 from .serializers import UserSerializer
 
 
-class RegistrationView(ModelViewSet, SuccessMessageMixin):
+class RegistrationView(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    success_message = "Your profile was created successfully"
 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        # Log in the user after successful creation
+        login(request, user)
+        return Response(serializer.data)
 
 
 
