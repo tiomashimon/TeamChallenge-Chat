@@ -14,6 +14,7 @@ class Chat(models.Model):
     is_alive = models.BooleanField(default=True)
     deletion_time = models.CharField(max_length=2, choices=DELETE_TIME_CHOICES, default=72)
     users = models.ManyToManyField(User, related_name="chats")
+    
 
 
 class Message(models.Model):
