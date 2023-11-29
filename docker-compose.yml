@@ -25,6 +25,18 @@ services:
     networks:
       - my_network
 
+  # frontend:
+  #   container_name: frontend-prod
+  #   image: frontend-prod
+  #   build:
+  #     target: production
+  #     context: ./frontend
+  #     dockerfile: ./Dockerfile
+  #   depends_on:
+  #     - backend
+  #   networks:
+  #     - my_network
+
 networks:
   my_network:
     driver: bridge
