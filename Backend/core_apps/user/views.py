@@ -10,6 +10,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth import login
 import string
 import random
+import json
 from django.utils.datastructures import MultiValueDictKeyError
 from .models import User
 
@@ -31,10 +32,10 @@ class RegistrationView(View):
     #     raise ValueError("Не вдається згенерувати унікальне та непорожнє ім'я користувача.")
 
     def post(self, request, *args, **kwargs):
-        
         try:
-            form = self.form_class(request.POST)
-        except MultiValueDictKeyError:
+            data = json.loads(request.body.decode('utf-8'))
+            form = self.form_class(data)
+        except (json.JSONDecodeError, MultiValueDictKeyError):
             return JsonResponse({'success': False, 'error': 'Invalid form data'})
 
         if form.is_valid():
