@@ -5,7 +5,7 @@ from .models import User
 from phonenumber_field.modelfields import PhoneNumberField
 
 
-class UserRegistrationForm(forms.ModelForm):
+class UserRegistrationForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ['nickname',]
+        fields = ['nickname', 'username', 'password1', 'password2']
