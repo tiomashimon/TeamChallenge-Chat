@@ -52,9 +52,14 @@ class RegistrationView(View):
 
 
 
-def test(request):
-    if request.method == "POST":
-        test_value = request.POST.get('test')
-        print(test_value)
+@csrf_exempt
+def process_post_request(request):
+    if request.method == 'POST':
+        data = json.loads(request.body.decode('utf-8'))
+        test_value = data.get('test')
+        print(test_value) 
+        return JsonResponse({'message': 'POST request processed successfully'})
+    else:
+        return JsonResponse({'message': 'Invalid request method'}, status=400)
 
         
