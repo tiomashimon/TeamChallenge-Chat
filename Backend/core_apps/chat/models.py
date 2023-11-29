@@ -13,13 +13,11 @@ class Chat(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     is_alive = models.BooleanField(default=True)
-    deletion_time = models.IntegerField( choices=DELETE_TIME_CHOICES, default=72)
+    deletion_time = models.IntegerField(choices=DELETE_TIME_CHOICES, default=72)
     users = models.ManyToManyField(User, related_name="chats")
-
 
     def __str__(self):
         return self.name
-    
 
 
 class Message(models.Model):
@@ -27,5 +25,3 @@ class Message(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     content = models.TextField(null=False, blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
-
-

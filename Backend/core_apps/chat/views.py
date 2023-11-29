@@ -9,6 +9,7 @@ from django.utils.datastructures import MultiValueDictKeyError
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 
+
 @method_decorator(csrf_exempt, name='dispatch')
 class ChatCreate(CreateView):
     model = Chat
@@ -18,9 +19,7 @@ class ChatCreate(CreateView):
 
     def get(self, request, *args, **kwargs):
         form = self.form_class()
-        return render(request, self.template_name, {'form': form} )
-
-    
+        return render(request, self.template_name, {'form': form})
 
     def post(self, request, *args, **kwargs):
         try:
@@ -29,16 +28,12 @@ class ChatCreate(CreateView):
             deletion_time = data.get('deletion-time')
             user = request.user
 
-            form = self.form_class({'name':chat_name, 'deletion_time':deletion_time, 'created_by':user})
+            form = self.form_class({'name': chat_name, 'deletion_time': deletion_time, 'created_by': user})
         except (json.JSONDecodeError, MultiValueDictKeyError):
-            return JsonResponse({'succes':False, 'error':'Invalid form data'})
+            return JsonResponse({'success': False, 'error': 'Invalid form data'})
 
         if form.is_valid:
             form.save()
-            return JsonResponse({'succes':True})
+            return JsonResponse({'success': True})
         else:
             return JsonResponse({'success': False, 'error': 'Invalid chat info'})
-            
-
-    
-
