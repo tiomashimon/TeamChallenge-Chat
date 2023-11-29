@@ -10,6 +10,8 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth import login
 import string
 import random
+from django.utils.datastructures import MultiValueDictKeyError
+from .models import User
 
 @method_decorator(csrf_exempt, name='dispatch')
 class RegistrationView(View):
@@ -17,21 +19,23 @@ class RegistrationView(View):
     form_class = UserRegistrationForm
     success_url = reverse_lazy('register')
 
-    def generate_random(self):
-        password_length = 8
-        characters = string.ascii_letters + string.digits
-        return ''.join(random.choice(characters) for _ in range(password_length))
+    # MAX_USERNAME_ATTEMPTS = 10
+
+    # def generate_random(self):
+    #     for _ in range(self.MAX_USERNAME_ATTEMPTS):
+    #         username = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(8))
+    #         print(f'Спроба імені: {username}')
+    #         if not User.objects.filter(username=username).exists() and username:
+    #             return username
+
+    #     raise ValueError("Не вдається згенерувати унікальне та непорожнє ім'я користувача.")
 
     def post(self, request, *args, **kwargs):
+        
         try:
-            nickname = request.POST['nickname']
+            form = self.form_class(request.POST)
         except MultiValueDictKeyError:
             return JsonResponse({'success': False, 'error': 'Invalid form data'})
-
-        username = self.generate_random()
-        password = self.generate_random()
-        form_data = {'nickname': nickname, 'username': username, 'password1': password, 'password2': password}
-        form = self.form_class(form_data)  # Use your custom form here
 
         if form.is_valid():
             user = form.save()
@@ -43,3 +47,4 @@ class RegistrationView(View):
     def get(self, request, *args, **kwargs):
         form = self.form_class()
         return render(request, self.template_name, {'form': form})
+
