@@ -3,5 +3,5 @@ from . import views
 from django.urls import path, include
 
 urlpatterns = [
-    path("", views.HelloWorld, name='hello-world'),
+    path("create/", views.ChatCreate.as_view(), name='chat-create'),
 ]
