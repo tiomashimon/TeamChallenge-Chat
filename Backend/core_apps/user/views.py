@@ -20,23 +20,27 @@ class RegistrationView(View):
     form_class = UserRegistrationForm
     success_url = reverse_lazy('register')
 
-    # MAX_USERNAME_ATTEMPTS = 10
+    MAX_USERNAME_ATTEMPTS = 10
 
-    # def generate_random(self):
-    #     for _ in range(self.MAX_USERNAME_ATTEMPTS):
-    #         username = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(8))
-    #         print(f'Спроба імені: {username}')
-    #         if not User.objects.filter(username=username).exists() and username:
-    #             return username
+    def generate_random(self):
+        for _ in range(self.MAX_USERNAME_ATTEMPTS):
+            username = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(8))
+            if not User.objects.filter(username=username).exists() and username:
+                return username
 
-    #     raise ValueError("Не вдається згенерувати унікальне та непорожнє ім'я користувача.")
+        raise ValueError("Не вдається згенерувати унікальне та непорожнє ім'я користувача.")
 
     def post(self, request, *args, **kwargs):
         try:
             data = json.loads(request.body.decode('utf-8'))
-            form = self.form_class(data)
+            nickname = data.get('nickname')
+            username = self.generate_random()
+            password = self.generate_random()
+
+            form = self.form_class({'nickname': nickname, 'username': username, 'password1': password, 'password2': password})
         except (json.JSONDecodeError, MultiValueDictKeyError):
             return JsonResponse({'success': False, 'error': 'Invalid form data'})
+
 
         if form.is_valid():
             user = form.save()
