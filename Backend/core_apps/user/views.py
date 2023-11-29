@@ -49,3 +49,12 @@ class RegistrationView(View):
         form = self.form_class()
         return render(request, self.template_name, {'form': form})
 
+
+
+
+def test(request):
+    if request.method == "POST":
+        test_value = request.POST.get('test')
+        print(test_value)
+
+        
