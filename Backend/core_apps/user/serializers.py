@@ -1,7 +1,6 @@
 import uuid
-
-from django.utils import timezone
 from rest_framework import serializers
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import User, Settings
 
@@ -27,32 +26,16 @@ class UserSerializer(serializers.ModelSerializer):
             username=uuid.uuid4().hex[:30],
             nickname=validated_data['nickname'],
         )
-
         if settings_data:
             user.settings = Settings.objects.create(**settings_data)
-
         user.set_password(password)
         user.save()
-
         return user
 
     def update(self, instance, validated_data):
         settings_data = validated_data.pop('settings', None)
         instance = super().update(instance, validated_data)
-
         if settings_data:
             instance.settings = SettingsSerializer().update(instance.settings, settings_data)
-
         instance.save()
         return instance
-
-
-# class UserDetailView(DetailView):
-#     model = User
-#     context_object_name = 'user'
-#     template_name = 'users/user_detail.html'
-#
-#     def get_context_data(self, **kwargs):
-#         post = super().get_context_data(**kwargs)
-#         post['posts'] = Post.objects.filter(user=post['user'])
-#         return post
