@@ -1,9 +1,15 @@
 from django.contrib import admin
+from django.contrib.auth import logout
+
 from . import views
 from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 
-urlpatterns = [
-    path("register/", views.RegistrationView.as_view(), name='register'),
-    path("test/", views.process_post_request),
+from .views import RegistrationView
 
-]
+router = DefaultRouter()
+router.register('', RegistrationView, basename='register')
+
+
+urlpatterns = router.urls
+
