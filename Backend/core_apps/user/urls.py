@@ -13,4 +13,3 @@ router.register('', RegistrationView, basename='register')
 
 urlpatterns = router.urls
 
-

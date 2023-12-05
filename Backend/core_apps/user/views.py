@@ -1,5 +1,3 @@
-from datetime import datetime, timedelta
-
 import jwt
 from django.contrib.auth import login, logout
 from django.http import JsonResponse
@@ -48,3 +46,4 @@ class RegistrationView(ModelViewSet):
     #     else:
     #         permission_classes = [IsAuthenticated]
     #     return [permission() for permission in permission_classes]
+
