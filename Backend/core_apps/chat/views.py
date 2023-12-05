@@ -5,6 +5,9 @@ from .serilaizers import ChatSerializer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+    def get(self, request, *args, **kwargs):
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
 
 class ChatAPIView(APIView):
     def get(self,request):
@@ -35,4 +38,12 @@ class ChatAPIView(APIView):
 
         return Response({'Succes':True, 'chat':serializer.data}) 
 
+            form = self.form_class({'name': chat_name, 'deletion_time': deletion_time, 'created_by': user})
+        except (json.JSONDecodeError, MultiValueDictKeyError):
+            return JsonResponse({'success': False, 'error': 'Invalid form data'})
 
+        if form.is_valid:
+            form.save()
+            return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'success': False, 'error': 'Invalid chat info'})
