@@ -14,10 +14,10 @@ from .serializers import UserSerializer
 
 
 class RegistrationView(ModelViewSet):
-    queryset = User.objects.all()
+    queryset = User.objects.all().prefetch_related('settings')
     serializer_class = UserSerializer
 
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
