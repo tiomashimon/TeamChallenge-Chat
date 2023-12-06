@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Chat
+from .models import Chat, Message
 from ..user.models import User
 from ..user.serializers import UserSerializer
 
@@ -8,7 +8,7 @@ class ChatSerializer(serializers.Serializer):
         (72, "72 hours"),
         (48, "48 hours"),
     ]
-
+    id = serializers.IntegerField(read_only=True)
     name = serializers.CharField(max_length=50)
     deletion_time = serializers.ChoiceField(
                             choices = DELETE_TIME_CHOICES)
@@ -28,8 +28,15 @@ class ChatSerializer(serializers.Serializer):
             user = User.objects.get(id=user_id)
 
             instance.users.add(user)
+                
 
         instance.save()
 
         return instance
 
+
+
+class MessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Message
+        fields = "__all__"

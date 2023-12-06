@@ -160,3 +160,4 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1)
 }
 
+LOGIN_REDIRECT_URL = 'chats'

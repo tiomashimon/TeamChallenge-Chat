@@ -1,49 +1,87 @@
 from django.shortcuts import render
 from rest_framework import generics
-from .models import Chat
-from .serilaizers import ChatSerializer
+from .models import Chat, Message
+from .serilaizers import ChatSerializer, MessageSerializer
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.generics import (
+     CreateAPIView,
+     UpdateAPIView,
+     RetrieveAPIView,
+     DestroyAPIView,
+     ListAPIView
+)
 
-    def get(self, request, *args, **kwargs):
-        form = self.form_class()
-        return render(request, self.template_name, {'form': form})
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.permissions import IsAuthenticated
 
-class ChatAPIView(APIView):
-    def get(self,request):
-        movies = Chat.objects.all()
-        return Response({'chat':ChatSerializer(movies, many=True).data})
 
-    def post(self,request):
-        serializer = ChatSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+# class ChatAPIView(APIView):
+#     def get(self,request):
+#         movies = Chat.objects.all()
+#         return Response({'chat':ChatSerializer(movies, many=True).data})
+
+#     def post(self,request):
+#         serializer = ChatSerializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
         
-        serializer.save()
+#         serializer.save()
 
-        return Response({'Succes':True, 'chat':serializer.data})
+#         return Response({'Succes':True, 'chat':serializer.data})
 
-    def put(self,request, *args, **kwargs):
-        chat_id = kwargs.get('id', None)
-        if not chat_id:
-            return Response({'error':'Method PUT not allowed'})
-        try:
-            instance = Chat.objects.get(id=chat_id)
+#     def put(self,request, *args, **kwargs):
+#         chat_id = kwargs.get('id', None)
+#         if not chat_id:
+#             return Response({'error':'Method PUT not allowed'})
+#         try:
+#             instance = Chat.objects.get(id=chat_id)
 
-        except:
-            return Response({'error':'Object does not exists'})
+#         except:
+#             return Response({'error':'Object does not exists'})
 
-        serializer = ChatSerializer(data=request.data, instance=instance)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
+#         serializer = ChatSerializer(data=request.data, instance=instance)
+#         serializer.is_valid(raise_exception=True)
+#         serializer.save()
 
-        return Response({'Succes':True, 'chat':serializer.data}) 
+#         return Response({'Succes':True, 'chat':serializer.data}) 
 
-            form = self.form_class({'name': chat_name, 'deletion_time': deletion_time, 'created_by': user})
-        except (json.JSONDecodeError, MultiValueDictKeyError):
-            return JsonResponse({'success': False, 'error': 'Invalid form data'})
 
-        if form.is_valid:
-            form.save()
-            return JsonResponse({'success': True})
-        else:
-            return JsonResponse({'success': False, 'error': 'Invalid chat info'})
+
+class ChatCreate(CreateAPIView):
+    queryset = Chat.objects.all()
+    serializer_class = ChatSerializer
+
+
+class ChatUpdate(UpdateAPIView):
+    queryset = Chat.objects.all()
+    serializer_class = ChatSerializer
+
+
+class ChatRetrieve(RetrieveAPIView):
+    queryset = Chat.objects.all()
+    serializer_class = ChatSerializer
+
+    lookup_field = 'id'
+
+
+class ChatDestroy(DestroyAPIView):
+    queryset = Chat.objects.all()
+    serializer_class = ChatSerializer
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response({'Message': 'Chat successfully deleted'})
+
+
+class ChatList(ListAPIView):
+    queryset = Chat.objects.all()
+    serializer_class = ChatSerializer
+
+
+class MessageViewSet(ModelViewSet):
+    queryset = Message.objects.all()
+    serializer_class = MessageSerializer
+
+    permission_classes = [IsAuthenticated]
+
