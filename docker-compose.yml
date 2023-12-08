@@ -26,12 +26,14 @@ services:
       - my_network
 
   # frontend:
-  #   container_name: frontend-prod
-  #   image: frontend-prod
+  #   container_name: frontend
   #   build:
-  #     target: production
-  #     context: ./frontend
+  #     context: ./Frontend
   #     dockerfile: ./Dockerfile
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     - ./Frontend:/app
   #   depends_on:
   #     - backend
   #   networks:
