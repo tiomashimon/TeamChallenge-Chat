@@ -1,6 +1,7 @@
 import jwt
 from django.contrib.auth import login, logout
 from django.http import JsonResponse
+import django_filters
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny, BasePermission
@@ -13,13 +14,23 @@ from .models import User
 from .serializers import UserSerializer
 
 
+class UserFilter(django_filters.FilterSet):
+    nickname = django_filters.CharFilter(field_name='nickname', lookup_expr='icontains')
+    username = django_filters.CharFilter(field_name='username', lookup_expr='icontains')
+
+    class Meta:
+        model = User
+        fields = ['nickname', 'username']
+
+
 class RegistrationView(ModelViewSet):
     """
         list, get, create, update and delete user and settings for him.
     """
+
     queryset = User.objects.all().prefetch_related('settings')
     serializer_class = UserSerializer
-
+    filterset_class = UserFilter
     # permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
@@ -49,4 +60,3 @@ class RegistrationView(ModelViewSet):
     #     else:
     #         permission_classes = [IsAuthenticated]
     #     return [permission() for permission in permission_classes]
-
