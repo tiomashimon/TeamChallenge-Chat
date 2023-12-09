@@ -12,7 +12,7 @@ class SettingsSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    settings = SettingsSerializer()
+    settings = SettingsSerializer(required=False)
     username = serializers.CharField(read_only=True)
 
     class Meta:
@@ -28,6 +28,8 @@ class UserSerializer(serializers.ModelSerializer):
         )
         if settings_data:
             user.settings = Settings.objects.create(**settings_data)
+        else:
+            user.settings = Settings.objects.create()
         user.set_password(password)
         user.save()
         return user

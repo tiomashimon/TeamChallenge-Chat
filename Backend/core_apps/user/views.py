@@ -14,6 +14,9 @@ from .serializers import UserSerializer
 
 
 class RegistrationView(ModelViewSet):
+    """
+        list, get, create, update and delete user and settings for him.
+    """
     queryset = User.objects.all().prefetch_related('settings')
     serializer_class = UserSerializer
 
