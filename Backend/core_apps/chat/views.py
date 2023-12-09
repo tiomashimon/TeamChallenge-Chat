@@ -83,5 +83,13 @@ class MessageViewSet(ModelViewSet):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
 
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
+    def list(self, request, **kwargs):
+        chat_id = kwargs.get('id')
 
+        queryset = Message.objects.filter(chat=chat_id)
+        serializer = MessageSerializer(queryset, many=True)
+
+        return Response(serializer.data)
+    
+    
