@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import User
-from .serializers import UserSerializer
+from .serializers import UserSerializer, GuestSerializer
 
 
 class UserFilter(django_filters.FilterSet):
@@ -23,13 +23,13 @@ class UserFilter(django_filters.FilterSet):
         fields = ['nickname', 'username']
 
 
-class RegistrationView(ModelViewSet):
+class GuestView(ModelViewSet):
     """
         list, get, create, update and delete user and settings for him.
     """
 
     queryset = User.objects.all().prefetch_related('settings')
-    serializer_class = UserSerializer
+    serializer_class = GuestSerializer
     filterset_class = UserFilter
     # permission_classes = [IsAuthenticated]
 
@@ -60,3 +60,32 @@ class RegistrationView(ModelViewSet):
     #     else:
     #         permission_classes = [IsAuthenticated]
     #     return [permission() for permission in permission_classes]
+
+
+class UserView(ModelViewSet):
+    """
+        list, get, create, update and delete user and settings for him.
+    """
+    queryset = User.objects.all().prefetch_related('settings')
+    serializer_class = UserSerializer
+    filterset_class = UserFilter
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        # Log in the user after successful creation
+        # login(request, user)
+        refresh = RefreshToken.for_user(user)
+        token_data = {
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        }
+
+        # Add token data to the response
+        response_data = {
+            'user': serializer.data,
+            'token': token_data,
+        }
+
+        return Response(response_data, status=status.HTTP_201_CREATED)
