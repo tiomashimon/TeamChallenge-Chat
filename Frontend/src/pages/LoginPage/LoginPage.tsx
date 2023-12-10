@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import styles from './login.module.css';
+import styles from './loginPage.module.css';
 
 interface FormDataGuest {
   nickname: string;

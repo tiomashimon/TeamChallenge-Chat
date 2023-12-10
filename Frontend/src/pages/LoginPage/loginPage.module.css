@@ -76,11 +76,11 @@
   border: 1px solid #8C69F1;
 }
 
-.input_password {
+/* .input_password {
   position: relative;
-}
+} */
 
-.input_password::before {
+/* .input_password::before {
   content: url("../../assets/eye.svg");
   position: absolute;
   right: 0;
@@ -88,7 +88,7 @@
   width: 15px;
   height: 15px;
   z-index: 101;
-}
+} */
 
 .label {
   display: flex;
