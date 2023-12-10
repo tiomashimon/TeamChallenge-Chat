@@ -19,12 +19,13 @@ class GuestSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'nickname', 'username', 'settings']
+        fields = ['id', 'nickname', 'username', 'is_guest', 'settings']
 
     def create(self, validated_data):
         settings_data = validated_data.pop('settings', None)
         validated_data['password'] = User.objects.make_random_password()
         validated_data['username'] = uuid.uuid4().hex[:30]
+        validated_data['is_guest'] = True
         if not settings_data:
             settings_data = {}
         validated_data['settings'] = Settings.objects.create(**settings_data)
@@ -50,7 +51,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'nickname', 'username', 'password', 'settings']
+        fields = ['id', 'nickname', 'username', 'password', 'is_guest', 'settings']
 
     def create(self, validated_data):
         settings_data = validated_data.pop('settings', None)
