@@ -14,4 +14,5 @@ class User(AbstractUser):
             MinLengthValidator(limit_value=2, message="Nickname cannot be empty."),
         ])
     settings = models.OneToOneField(Settings, on_delete=models.CASCADE, default=None, null=True)
+    is_guest = models.BooleanField(default=False)
 
