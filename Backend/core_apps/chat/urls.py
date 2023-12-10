@@ -15,5 +15,5 @@ urlpatterns = [
     path('', views.ChatList.as_view(), name='add-user'),
     path('<int:pk>/delete/', views.ChatDestroy.as_view(), name='chat-delete'),
 
-    path('<int:id>/', message_list, name='message-list'), 
+    path('<int:id>/message/', message_list, name='message-list'), 
 ]
