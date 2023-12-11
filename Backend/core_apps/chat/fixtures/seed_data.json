@@ -1,0 +1,9 @@
+[
+  {
+    "model": "chat.chattopic",
+    "pk": 1,
+    "fields": {
+      "title": "Topic 1"
+    }
+  }
+]

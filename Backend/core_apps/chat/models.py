@@ -3,6 +3,13 @@ from core_apps.user.models import User
 from django.conf import settings
 
 
+class ChatTopic(models.Model):
+    def __str__(self):
+        return self.title
+        
+    title = models.CharField(max_length=255)
+
+
 class Chat(models.Model):
     DELETE_TIME_CHOICES = [
         (72, "72 hours"),
@@ -15,6 +22,7 @@ class Chat(models.Model):
     is_alive = models.BooleanField(default=True)
     deletion_time = models.IntegerField(choices=DELETE_TIME_CHOICES, default=72)
     users = models.ManyToManyField(User, blank=True, related_name="chats")
+    topic = models.ForeignKey(ChatTopic, on_delete=models.CASCADE, default=1)
 
     def __str__(self):
         return self.name

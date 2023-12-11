@@ -1,9 +1,11 @@
 from django.shortcuts import render
 from rest_framework import generics
-from .models import Chat, Message
-from .serilaizers import ChatSerializer, MessageSerializer
+from .models import Chat, Message, ChatTopic
+from .serilaizers import ChatSerializer, MessageSerializer, TopicSerializer
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.pagination import PageNumberPagination
+from rest_framework import filters
 from rest_framework.generics import (
      CreateAPIView,
      UpdateAPIView,
@@ -92,4 +94,18 @@ class MessageViewSet(ModelViewSet):
 
         return Response(serializer.data)
     
+
+
+class TopicSetPagination(PageNumberPagination):
+    page_size = 1
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+
+
     
+class TopicViewSet(ModelViewSet):
+    queryset = ChatTopic.objects.all()
+    serializer_class = TopicSerializer
+    pagination_class = TopicSetPagination
+    search_fields = ['title',]
+    filter_backends = (filters.SearchFilter,)
