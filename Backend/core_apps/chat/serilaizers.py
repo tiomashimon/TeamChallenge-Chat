@@ -25,6 +25,7 @@ class ChatSerializer(serializers.Serializer):
     users = UserSerializer(many=True, read_only=True)
     messages = MessageSerializer(many=True, read_only=True)
     topic = serializers.PrimaryKeyRelatedField(queryset=ChatTopic.objects.all()) 
+    
     def create(self, validated_data):
         return Chat.objects.create(**validated_data)
 
@@ -45,8 +46,8 @@ class ChatSerializer(serializers.Serializer):
 
 
 
-class TopicSerializer(serializers.Serializer):
-    chat_set = ChatSerializer(many=True, read_only=True)
+class ChatTopicSerializer(serializers.Serializer):
+    chats = ChatSerializer(many=True, read_only=True)
     id = serializers.IntegerField(read_only=True)
     title = serializers.CharField(max_length=255)
 
