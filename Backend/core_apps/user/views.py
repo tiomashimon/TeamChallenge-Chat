@@ -13,7 +13,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import User
-from .serializers import UserSerializer, GuestSerializer, ChangePasswordSerializer
+from .serializers import UserSerializer, GuestSerializer, ChangePasswordSerializer, UserCreateSerializer
 
 
 class UserFilter(django_filters.FilterSet):
@@ -93,6 +93,12 @@ class UserView(ModelViewSet):
         }
 
         return Response(response_data, status=status.HTTP_201_CREATED)
+
+    def get_serializer_class(self, *args, **kwargs):
+        if self.action == 'create':
+            return UserCreateSerializer
+        else:
+            return UserSerializer
 
 
 class ChangePasswordView(generics.UpdateAPIView):

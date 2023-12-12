@@ -41,7 +41,7 @@ class GuestSerializer(serializers.ModelSerializer):
         return instance
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UserCreateSerializer(serializers.ModelSerializer):
     settings = SettingsSerializer(required=False)
     password = serializers.CharField(
         write_only=True,
@@ -70,16 +70,22 @@ class UserSerializer(serializers.ModelSerializer):
         if not settings_data:
             settings_data = {}
         validated_data['settings'] = Settings.objects.create(**settings_data)
-        return super(UserSerializer, self).create(validated_data)
+        return super(UserCreateSerializer, self).create(validated_data)
+
+
+class UserSerializer(serializers.ModelSerializer):
+    settings = SettingsSerializer(required=False)
+    username = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = User
+        fields = ['id', 'nickname', 'username', 'is_guest', 'settings']
 
     def update(self, instance, validated_data):
         settings_data = validated_data.pop('settings', None)
-        password = validated_data.pop('password2', None)
         instance = super().update(instance, validated_data)
         if settings_data:
             instance.settings = SettingsSerializer().update(instance.settings, settings_data)
-        if password:
-            instance.set_password(make_password(password))
         instance.save()
         return instance
 
