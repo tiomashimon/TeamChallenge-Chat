@@ -22,7 +22,7 @@ class Chat(models.Model):
     is_alive = models.BooleanField(default=True)
     deletion_time = models.IntegerField(choices=DELETE_TIME_CHOICES, default=72)
     users = models.ManyToManyField(User, blank=True, related_name="chats")
-    topic = models.ForeignKey(ChatTopic, on_delete=models.CASCADE, default=1)
+    topic = models.ForeignKey(ChatTopic, on_delete=models.CASCADE, default=1, related_name='chats')
 
     def __str__(self):
         return self.name

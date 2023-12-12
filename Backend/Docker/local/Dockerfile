@@ -8,10 +8,9 @@ WORKDIR /code/
 COPY ./requirements/ /code/requirements/
 RUN pip install --no-cache-dir -r requirements/local.txt
 
-# COPY Docker/local/entrypoint.sh /code/
 COPY . /code/
 
-# RUN chmod +x Docker/local/entrypoint.sh
+# RUN chmod +x /code/Docker/local/entrypoint.sh
 
 
 # ENTRYPOINT ["/code/Docker/local/entrypoint.sh"]
