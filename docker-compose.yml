@@ -14,8 +14,10 @@ services:
       - ./Backend/:/code
     depends_on:
       - db
+      - redis
     networks:
       - my_network
+
   db:
     image: postgres
     restart: always
@@ -25,7 +27,54 @@ services:
     networks:
       - my_network
 
+  redis:
+    image: redis
+    restart: always
+    ports:
+      - 6379:6379
+    networks:
+      - my_network
+
+  celery:
+    build:
+      context: ./Backend/
+      dockerfile: ./Docker/local/Dockerfile
+    command: celery -A main worker -l info
+    volumes:
+      - ./Backend/:/code
+    depends_on:
+      - backend
+      - redis
+    networks:
+      - my_network
+
+  celery-beat:
+    build:
+      context: ./Backend/
+      dockerfile: ./Docker/local/Dockerfile
+    command: celery -A main beat -l info
+    volumes:
+      - ./Backend/:/code
+    depends_on:
+      - backend
+      - redis
+      - db
+    networks:
+      - my_network
+
+  flower:
+    image: mher/flower
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - FLOWER_PORT=5555
+    ports:
+      - "5555:5555"
+    depends_on:
+      - backend
+      - celery
+    networks:
+      - my_network
+
 networks:
   my_network:
     driver: bridge
-
