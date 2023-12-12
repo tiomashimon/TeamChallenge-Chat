@@ -18,6 +18,10 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 
 
+from django_celery_beat.models import PeriodicTask, IntervalSchedule
+from .tasks import delete_expired_chats
+
+
 # class ChatAPIView(APIView):
 #     def get(self,request):
 #         movies = Chat.objects.all()
@@ -109,3 +113,21 @@ class TopicViewSet(ModelViewSet):
     pagination_class = ChatTopicSetPagination
     search_fields = ['title',]
     filter_backends = (filters.SearchFilter,)
+
+
+
+def create_delete_expired_chats_task():
+    interval, created = IntervalSchedule.objects.get_or_create(every=1, period=IntervalSchedule.HOURS)
+
+    delete_expired_chats_task, created = PeriodicTask.objects.get_or_create(
+        interval=interval,
+        name='Delete Expired Chats',
+        task='chat.tasks.delete_expired_chats'
+    )
+
+    delete_expired_chats_task.enabled = True
+    delete_expired_chats_task.save()
+
+
+
+
