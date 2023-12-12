@@ -18,6 +18,6 @@ app.conf.beat_schedule = {
     'delete-expired-chats':
     {
         'task': 'core_apps.chat.tasks.delete_expired_chats',
-        'schedule': crontab(minute='*/1')
+        'schedule': crontab(minute='*/5')
     }
 }
