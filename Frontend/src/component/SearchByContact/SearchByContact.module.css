@@ -1,6 +1,6 @@
 .search{
   width: 100%;
-  max-width: 400px;
+  max-width: 450px;
   height: 40px;
   border: none;
   border-radius: 25px;
@@ -18,7 +18,7 @@
 }
 
 .search_by_contact{
-  margin-bottom: 16px;
+  margin: 16px 0;
   position: relative;
 }
 

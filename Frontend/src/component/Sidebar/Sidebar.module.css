@@ -1,0 +1,17 @@
+.chats_nav{
+  background-color:#8C69F1;
+  height: 56px;
+  padding: 9px 12px;
+  display: flex;
+  align-items: center;
+}
+
+.nav_title{
+  font-size: 32px;
+  margin: 0 10px
+}
+
+.box_by_contact{
+  padding: 0 12px;
+}
+

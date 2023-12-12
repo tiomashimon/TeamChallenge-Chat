@@ -17,6 +17,7 @@ module.exports = {
 			'warn',
 			{ allowConstantExport: true },
 		],
+    "react-hooks/rules-of-hooks": "error",
     'react/react-in-jsx-scope': 'off',
     'jsx-a11y/label-has-associated-control': 'off',
 	},
