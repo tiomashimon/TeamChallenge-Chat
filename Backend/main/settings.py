@@ -38,6 +38,8 @@ APP_DIR = ROOT_DIR / "core_apps"
 THIRD_PARTY_APPS = ['corsheaders', ]
 
 DJANGO_APPS = [
+    'celery_progress',
+    'django_celery_beat',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -58,6 +60,8 @@ LOCAL_APPS = [
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 
+#Swagger
+
 SWAGGER_SETTINGS = {
     'USE_SESSION_AUTH': False,
     'SECURITY_DEFINITIONS': {
@@ -68,6 +72,17 @@ SWAGGER_SETTINGS = {
         }
     },
 }
+
+#Celery
+
+
+CELERY_BROKER_URL = 'redis://redis:6379/0'
+CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
+
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'
 
 
 MIDDLEWARE = [

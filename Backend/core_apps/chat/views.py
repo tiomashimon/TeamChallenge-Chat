@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from rest_framework import generics
 from .models import Chat, Message, ChatTopic
+from django.db.models import Prefetch  
+
 from .serilaizers import ChatSerializer, MessageSerializer, ChatTopicSerializer
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -16,6 +18,10 @@ from rest_framework.generics import (
 
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
+
+
+from django_celery_beat.models import PeriodicTask, IntervalSchedule
+from .tasks import delete_expired_chats
 
 
 # class ChatAPIView(APIView):
@@ -102,10 +108,33 @@ class ChatTopicSetPagination(PageNumberPagination):
     max_page_size = 100
 
 
-    
+
 class TopicViewSet(ModelViewSet):
-    queryset = queryset = ChatTopic.objects.prefetch_related('chats').all()
+    from django.db.models import Prefetch
+
+    queryset = ChatTopic.objects.prefetch_related(
+    Prefetch('chats', queryset=Chat.objects.filter(is_alive=True))
+        ).filter(chats__is_alive=True).distinct()
     serializer_class = ChatTopicSerializer
     pagination_class = ChatTopicSetPagination
     search_fields = ['title',]
     filter_backends = (filters.SearchFilter,)
+
+
+
+
+# def create_delete_expired_chats_task():
+#     interval, created = IntervalSchedule.objects.get_or_create(every=1, period=IntervalSchedule.HOURS)
+
+#     delete_expired_chats_task, created = PeriodicTask.objects.get_or_create(
+#         interval=interval,
+#         name='Delete Expired Chats',
+#         task='chat.tasks.delete_expired_chats'
+#     )
+
+#     delete_expired_chats_task.enabled = True
+#     delete_expired_chats_task.save()
+
+
+
+
