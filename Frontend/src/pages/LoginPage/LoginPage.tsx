@@ -1,65 +1,80 @@
 import { useState } from 'react';
 import LogIn from '../../component/Auth/LogIn/LogIn';
 import SignUp from '../../component/Auth/SignUp/SignUp';
-import { FormDataGuest, FormDataSignIn } from '../../utils/interface';
+import { IFormData } from '../../utils/interface';
 import styles from './loginPage.module.css';
 
 const Login = () => {
-  const [formDataGuest, setFormDataGuest] = useState<FormDataGuest>({
+  const [formDataGuest, setFormDataGuest] = useState<IFormData>({
     nickname: '',
   });
 
-  const [isAuth, setAuth] = useState<Boolean>(false);
-  const [formDataSignIn, setFormDataSignIn] = useState<FormDataSignIn>({
-    email: '',
+  const [formDataSignIn, setFormDataSignIn] = useState<IFormData>({
+    nickname: '',
+    username: '',
     password: '',
+    password2: '',
   })
+  const [isAuth, setAuth] = useState<Boolean>(false);
+
+  const [error, setError] = useState<IFormData | null>(null);
+  const [errorGuest, setErrorGuest] = useState<IFormData | null>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+
+    if (isAuth) {
+      setFormDataSignIn({
+        ...formDataSignIn,
+        [name]: value,
+      });
+    }
+
     setFormDataGuest({
       ...formDataGuest,
       [name]: value,
     });
   };
-  const handleInputChangeSignIn = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormDataSignIn({
-      ...formDataSignIn,
-      [name]: value,
-    });
-  };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    fetch(`${import.meta.env.VITE_BACKEND_URL}user/guest/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formDataGuest),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((error) => {
-        console.error('Error sending data:', error);
+    const URI = isAuth ? `${import.meta.env.VITE_BACKEND_URL}user/` : `${import.meta.env.VITE_BACKEND_URL}user/guest/`;
+    const formData = isAuth ? formDataSignIn : formDataGuest;
+    try {
+      const response = await fetch(URI, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
       });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        isAuth ? setError(errorData) : setErrorGuest(errorData);
+      } else {
+        const data = await response.json();
+        setError(null);
+        setErrorGuest(null)
+        console.log(data);
+      }
+    } catch (error) {
+      console.error('Error sending data:', error);
+    }
   };
   const handleButtonClick = (isSignIn: boolean) => () => {
     setAuth(isSignIn);
   };
 
-  const handleResetPassword = () => {
-    setFormDataSignIn(prevState => {
-      return {
-        ...prevState,
-        password: '',
-      };
-    })
-  }
+  // const handleResetPassword = () => {
+  //   setFormDataSignIn(prevState => {
+  //     return {
+  //       ...prevState,
+  //       password: '',
+  //     };
+  //   })
+  // }
 
   return (
     <div className={styles.modal}>
@@ -69,8 +84,12 @@ const Login = () => {
         <h2 className={styles.subtitle}>Please choose how you want to proceed</h2>
 
         <div className={styles.select_auth}>
-          <button className={`btn ${styles.btn_guest} ${isAuth ? '' : styles.active}`} onClick={handleButtonClick(false)}>Guest</button>
-          <button className={`btn ${styles.btn_signIn} ${isAuth ? styles.active : ''}`} onClick={handleButtonClick(true)}>Sign in</button>
+          <button className={`btn ${styles.btn_guest} ${isAuth ? '' : styles.active}`} onClick={handleButtonClick(false)}>
+            Guest
+          </button>
+          <button className={`btn ${styles.btn_signIn} ${isAuth ? styles.active : ''}`} onClick={handleButtonClick(true)}>
+            Sign in
+          </button>
         </div>
 
         <form onSubmit={handleSubmit}>
@@ -81,11 +100,15 @@ const Login = () => {
           {isAuth ? (
             <LogIn
               formData={formDataSignIn}
-              handleInputChange={handleInputChangeSignIn}
-              handleResetPassword={handleResetPassword}
+              handleInputChange={handleInputChange}
+              error={error}
+            // handleResetPassword={handleResetPassword}
             />
           ) : (
-            <SignUp formData={formDataGuest} handleInputChange={handleInputChange} />
+            <SignUp
+              formData={formDataGuest}
+              handleInputChange={handleInputChange}
+              error={errorGuest} />
           )}
 
           <button type="submit" className={`btn ${styles.btn_signUp}`}>{isAuth ? 'Log In' : 'Sign Up'}</button>

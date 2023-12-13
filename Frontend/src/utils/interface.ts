@@ -1,8 +1,6 @@
-export interface FormDataGuest {
-  nickname: string;
-}
-
-export interface FormDataSignIn {
-  email: string;
-  password: string;
+export interface IFormData {
+  nickname: string | string[] | undefined,
+  username?: string | string[] | undefined,
+  password?: string | string[] | undefined,
+  password2?: string | string[] | undefined,
 }

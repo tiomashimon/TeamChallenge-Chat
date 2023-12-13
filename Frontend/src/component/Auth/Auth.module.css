@@ -28,7 +28,7 @@
 
 .label {
   display: flex;
-  align-items: end;
+  justify-content: space-between;
   margin-bottom: 10px;
 }
 
@@ -75,4 +75,10 @@
   text-decoration: none;
   border: none;
   background-color: transparent;
+}
+
+.error {
+  margin: 0;
+  color: red;
+  font-size: 16px;
 }

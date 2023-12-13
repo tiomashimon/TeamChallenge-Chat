@@ -1,14 +1,18 @@
-import { FormDataGuest } from '../../../utils/interface';
+import { IFormData } from '../../../utils/interface';
 import styles from '../Auth.module.css';
 
 interface SignUpProps {
-  formData: FormDataGuest;
+  formData: IFormData;
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  error: IFormData | null
 }
-const SignUp = ({formData, handleInputChange}: SignUpProps) => {
+const SignUp = ({ formData, handleInputChange, error }: SignUpProps) => {
   return (
     <div className={styles.form_group}>
-      <label htmlFor="nickname" className={`${styles.subtitle} ${styles.label}`}>Username</label>
+      <label htmlFor="nickname" className={`${styles.subtitle} ${styles.label}`}>
+        Username
+        {error && error.nickname && <p className={styles.error}>{error.nickname}</p>}
+      </label>
 
       <input
         type="text"
