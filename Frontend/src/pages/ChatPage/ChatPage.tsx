@@ -2,27 +2,26 @@ import arrowIcon from '../../assets/arrow-left.svg';
 import LogoIcon from '../../assets/logo.svg';
 import SendIcon from '../../assets/send.svg';
 import styles from './ChatPage.module.css';
+
 const ChatPage = () => {
   return (
     <>
       <div className={styles.row}>
         <div className={styles.nav}>
-          <button className={styles.arrow}>
-            <img src={arrowIcon} alt="arrow"  />
+          <button className={styles.arrow} type="button">
+            <img src={arrowIcon} alt="arrow" />
           </button>
           <span className={styles.name}>Name chat</span>
         </div>
 
-        <div className={styles.settings}>
-          settings
-        </div>
+        <div className={styles.settings}>settings</div>
       </div>
 
       <div className={styles.chat}>
         <div className={styles.messages}>
           <div className={styles.other_messages}>
             <div className={styles.other_photo}>
-              <img src={LogoIcon} alt="photo" />
+              <img src={LogoIcon} alt="logo" />
             </div>
 
             <div className={styles.other_message}>
@@ -40,9 +39,9 @@ const ChatPage = () => {
         </div>
 
         <div className={styles.input}>
-          <input type="text" className={styles.input_field} placeholder='Write something' />
+          <input type="text" className={styles.input_field} placeholder="Write something" />
 
-          <button className={styles.sendBtn}>
+          <button className={styles.sendBtn} type="button">
             <img src={SendIcon} alt="send" className={styles.send_icon} />
           </button>
         </div>

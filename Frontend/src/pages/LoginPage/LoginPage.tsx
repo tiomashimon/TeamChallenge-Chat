@@ -14,8 +14,8 @@ const Login = () => {
     username: '',
     password: '',
     password2: '',
-  })
-  const [isAuth, setAuth] = useState<Boolean>(false);
+  });
+  const [isAuth, setAuth] = useState<boolean>(false);
 
   const [error, setError] = useState<IFormData | null>(null);
   const [errorGuest, setErrorGuest] = useState<IFormData | null>(null);
@@ -39,7 +39,9 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const URI = isAuth ? `${import.meta.env.VITE_BACKEND_URL}user/` : `${import.meta.env.VITE_BACKEND_URL}user/guest/`;
+    const URI = isAuth
+      ? `${import.meta.env.VITE_BACKEND_URL}user/`
+      : `${import.meta.env.VITE_BACKEND_URL}user/guest/`;
     const formData = isAuth ? formDataSignIn : formDataGuest;
     try {
       const response = await fetch(URI, {
@@ -52,15 +54,16 @@ const Login = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         isAuth ? setError(errorData) : setErrorGuest(errorData);
       } else {
         const data = await response.json();
         setError(null);
-        setErrorGuest(null)
+        setErrorGuest(null);
         console.log(data);
       }
-    } catch (error) {
-      console.error('Error sending data:', error);
+    } catch (errorMessage) {
+      console.error('Error sending data:', errorMessage);
     }
   };
   const handleButtonClick = (isSignIn: boolean) => () => {
@@ -84,39 +87,52 @@ const Login = () => {
         <h2 className={styles.subtitle}>Please choose how you want to proceed</h2>
 
         <div className={styles.select_auth}>
-          <button className={`btn ${styles.btn_guest} ${isAuth ? '' : styles.active}`} onClick={handleButtonClick(false)}>
+          <button
+            className={`btn ${styles.btn_guest} ${isAuth ? '' : styles.active}`}
+            onClick={handleButtonClick(false)}
+            type="button"
+          >
             Guest
           </button>
-          <button className={`btn ${styles.btn_signIn} ${isAuth ? styles.active : ''}`} onClick={handleButtonClick(true)}>
+          <button
+            className={`btn ${styles.btn_signIn} ${isAuth ? styles.active : ''}`}
+            onClick={handleButtonClick(true)}
+            type="button"
+          >
             Sign in
           </button>
         </div>
 
         <form onSubmit={handleSubmit}>
-          {!isAuth && (
-            <h2 className={styles.subtitle}>You can create an account later</h2>
-          )}
+          {!isAuth && <h2 className={styles.subtitle}>You can create an account later</h2>}
 
           {isAuth ? (
             <LogIn
               formData={formDataSignIn}
               handleInputChange={handleInputChange}
               error={error}
-            // handleResetPassword={handleResetPassword}
+              // handleResetPassword={handleResetPassword}
             />
           ) : (
             <SignUp
               formData={formDataGuest}
               handleInputChange={handleInputChange}
-              error={errorGuest} />
+              error={errorGuest}
+            />
           )}
 
-          <button type="submit" className={`btn ${styles.btn_signUp}`}>{isAuth ? 'Log In' : 'Sign Up'}</button>
+          <button type="submit" className={`btn ${styles.btn_signUp}`}>
+            {isAuth ? 'Log In' : 'Sign Up'}
+          </button>
         </form>
       </div>
-      {isAuth && <div className={styles.footer}>
-        <button type='button' className={styles.btn_footer} onClick={handleButtonClick(false)}>Don't have an account?</button>
-      </div>}
+      {isAuth && (
+        <div className={styles.footer}>
+          <button type="button" className={styles.btn_footer} onClick={handleButtonClick(false)}>
+            Don&apos;t have an account?
+          </button>
+        </div>
+      )}
     </div>
   );
 };

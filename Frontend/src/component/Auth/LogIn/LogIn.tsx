@@ -2,10 +2,10 @@ import { IFormData } from '../../../utils/interface';
 import styles from '../Auth.module.css';
 
 interface LogInProps {
-  formData: IFormData
-  handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  formData: IFormData;
+  handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   // handleResetPassword: () => void
-  error: IFormData | null
+  error: IFormData | null;
 }
 const LogIn = ({ formData, handleInputChange, error }: LogInProps) => {
   return (
@@ -20,7 +20,7 @@ const LogIn = ({ formData, handleInputChange, error }: LogInProps) => {
           type="text"
           name="nickname"
           id="nickname"
-          placeholder='Your Nickname'
+          placeholder="Your Nickname"
           value={formData.nickname}
           onChange={handleInputChange}
           className={styles.input}
@@ -37,7 +37,7 @@ const LogIn = ({ formData, handleInputChange, error }: LogInProps) => {
           type="text"
           name="username"
           id="username"
-          placeholder='Your Username'
+          placeholder="Your Username"
           value={formData.username}
           onChange={handleInputChange}
           className={styles.input}
@@ -54,7 +54,7 @@ const LogIn = ({ formData, handleInputChange, error }: LogInProps) => {
           type="password"
           name="password"
           id="password"
-          placeholder='Your password'
+          placeholder="Your password"
           value={formData.password}
           onChange={handleInputChange}
           className={`${styles.input} ${styles.input_password}`}
@@ -71,7 +71,7 @@ const LogIn = ({ formData, handleInputChange, error }: LogInProps) => {
           type="password2"
           name="password2"
           id="password2"
-          placeholder='Rapid password'
+          placeholder="Rapid password"
           value={formData.password2}
           onChange={handleInputChange}
           className={`${styles.input} ${styles.input_password}`}

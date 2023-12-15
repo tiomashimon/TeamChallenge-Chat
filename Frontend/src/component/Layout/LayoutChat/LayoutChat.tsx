@@ -1,7 +1,6 @@
-import { Outlet } from 'react-router';
+import { Outlet } from 'react-router-dom';
 import SideBar from '../../Sidebar/Sidebar';
 import styles from './LayoutChat.module.css';
-
 
 const LayoutChat = () => {
   return (

@@ -4,7 +4,7 @@ import styles from '../Auth.module.css';
 interface SignUpProps {
   formData: IFormData;
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  error: IFormData | null
+  error: IFormData | null;
 }
 const SignUp = ({ formData, handleInputChange, error }: SignUpProps) => {
   return (
@@ -20,7 +20,7 @@ const SignUp = ({ formData, handleInputChange, error }: SignUpProps) => {
         id="nickname"
         value={formData.nickname}
         onChange={handleInputChange}
-        placeholder='Username'
+        placeholder="Username"
         className={styles.input}
       />
     </div>
