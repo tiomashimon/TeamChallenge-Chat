@@ -3,6 +3,7 @@ from datetime import timedelta
 from django.utils import timezone
 from .models import Chat
 
+
 @app.task
 def delete_expired_chats():
     now = timezone.now()
@@ -15,7 +16,6 @@ def delete_expired_chats():
             print('Delete chat: ' + chat.name)
             chat.is_alive = False
             chat.save()
-    
 
 
 import time

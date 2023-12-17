@@ -60,8 +60,7 @@ LOCAL_APPS = [
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
-
-#Swagger
+# Swagger
 
 SWAGGER_SETTINGS = {
     'USE_SESSION_AUTH': False,
@@ -74,7 +73,7 @@ SWAGGER_SETTINGS = {
     },
 }
 
-#Celery
+# Celery
 
 
 CELERY_BROKER_URL = 'redis://redis:6379/0'
@@ -84,7 +83,6 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'UTC'
-
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -198,8 +196,8 @@ EMAIL_HOST = 'smtp.ukr.net'
 EMAIL_PORT = '465'
 EMAIL_HOST_USER = env("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
-DEFAULT_FROM_EMAIL = env("EMAIL_HOST_USER")
-
+# DEFAULT_FROM_EMAIL = env("EMAIL_HOST_USER")
+DEFAULT_FROM_EMAIL = f'Celery {env("EMAIL_HOST_USER")}'
 
 DJANGO_REST_PASSWORDRESET_TOKEN_CONFIG = {
     "CLASS": "django_rest_passwordreset.tokens.RandomNumberTokenGenerator",
@@ -209,4 +207,4 @@ DJANGO_REST_PASSWORDRESET_TOKEN_CONFIG = {
     }
 }
 
-DJANGO_REST_MULTITOKENAUTH_RESET_TOKEN_EXPIRY_TIME = 0.1 # - time in hours about how long the token is active (Default: 24)
+DJANGO_REST_MULTITOKENAUTH_RESET_TOKEN_EXPIRY_TIME = 0.1  # - time in hours about how long the token is active (Default: 24)
