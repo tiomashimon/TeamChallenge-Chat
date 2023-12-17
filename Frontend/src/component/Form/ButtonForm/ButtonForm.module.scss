@@ -1,0 +1,26 @@
+.btn{
+  width: 240px;
+  height: 84px;
+  font-size: 40px;
+  font-weight: 500;
+  border-radius: $borderRadius;
+  -webkit-border-radius: $borderRadius;
+  -moz-border-radius: $borderRadius;
+  -ms-border-radius: $borderRadius;
+  -o-border-radius: $borderRadius;
+  color: $colorWhite;
+  background-color: $colorPurple;
+}
+
+.not_active{
+  color: $colorGray;
+  background-color: $colorGray2;
+}
+
+.margin_inline_end{
+  margin-inline-end: 18px;
+}
+
+.margin_block_start{
+  margin-block-start: 9px;
+}

@@ -1,4 +1,4 @@
-import plus from '../../assets/plus.svg';
+import plus from '../../assets/img/plus.svg';
 import SearchByContact from '../../component/SearchByContact/SearchByContact';
 import styles from './ChatsPage.module.css';
 

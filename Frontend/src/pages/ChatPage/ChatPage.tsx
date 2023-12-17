@@ -1,6 +1,6 @@
-import arrowIcon from '../../assets/arrow-left.svg';
-import LogoIcon from '../../assets/logo.svg';
-import SendIcon from '../../assets/send.svg';
+import arrowIcon from '../../assets/img/arrow-left.svg';
+import LogoIcon from '../../assets/img/logo.svg';
+import SendIcon from '../../assets/img/send.svg';
 import styles from './ChatPage.module.css';
 
 const ChatPage = () => {

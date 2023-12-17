@@ -1,0 +1,58 @@
+.buttons{
+  margin-block: 24px;
+}
+
+.label {
+  display: flex;
+  justify-content: space-between;
+  margin-block-end: 10px;
+}
+
+.row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-block-start: 25px;
+  margin-block-end: 35px;
+}
+
+.check {
+  padding-inline-start: 55px;
+  font-size: 16px;
+}
+
+.check_input {
+  position: absolute;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.check_box {
+  position: absolute;
+  margin-left: -55px;
+  margin-top: -11px;
+  width: 40px;
+  height: 40px;
+  border: 2px solid $colorPurple;
+  border-radius: 15px;
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  -ms-border-radius: 15px;
+  -o-border-radius: 15px;
+}
+
+.check_input:checked+.check_box {
+  background-color: $colorPurple;
+  background-image: url('../../../assets/img/check.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.reset {
+  color: $colorPurple;
+  font-size: 16px;
+  text-decoration: none;
+  border: none;
+  background-color: transparent;
+}

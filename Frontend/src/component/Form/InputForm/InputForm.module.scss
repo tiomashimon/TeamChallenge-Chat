@@ -1,0 +1,27 @@
+.form{
+  width: 100%;
+  font-size: 20px;
+  margin-block-end: 16px;
+}
+
+.label{
+  display: flex;
+  justify-content: space-between;
+  margin-block-end: 16px;
+}
+
+.error{
+  color: red;
+}
+
+.input{
+  width: 100%;
+  font-size: 20px;
+  background-color: $colorGray2;
+  padding: 16px;
+  border-radius: $borderRadius;
+  -webkit-border-radius: $borderRadius;
+  -moz-border-radius: $borderRadius;
+  -ms-border-radius: $borderRadius;
+  -o-border-radius: $borderRadius;
+}

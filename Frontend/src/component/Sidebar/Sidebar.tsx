@@ -1,4 +1,4 @@
-import arrowLeft from '../../assets/arrow-left.svg';
+import arrowLeft from '../../assets/img/arrow-left.svg';
 import Contact from '../Contact/Contact';
 import SearchByContact from '../SearchByContact/SearchByContact';
 import styles from './SideBar.module.css';

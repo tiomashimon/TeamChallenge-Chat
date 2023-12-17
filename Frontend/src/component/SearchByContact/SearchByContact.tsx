@@ -1,4 +1,4 @@
-import searchIcon from '../../assets/search.png';
+import searchIcon from '../../assets/img/search.png';
 import styles from './SearchByContact.module.css';
 
 const SearchByContact = () => {
