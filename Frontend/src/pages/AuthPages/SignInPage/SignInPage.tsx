@@ -46,11 +46,11 @@ const SignInPage = () => {
 
         <InputForm
           id="password"
-          type="password"
           placeholder="Enter your password"
           label="Password"
           errorMessage={errors.password?.message}
           {...register('password', { required: 'Password is required' })}
+          showPassword
         />
 
         <div className={styles.row}>

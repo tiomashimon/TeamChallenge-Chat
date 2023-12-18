@@ -36,7 +36,6 @@ const GuestPage = () => {
       <AuthForm onSubmit={onSubmit}>
         <InputForm
           id="nickname"
-          type="text"
           placeholder="Enter your nickname"
           label="Nickname"
           errorMessage={errors.nickname?.message}

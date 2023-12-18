@@ -43,11 +43,11 @@ const ResetPassPage = () => {
         />
         <InputForm
           id="password"
-          type="password"
           label="Password"
           placeholder="Enter your password"
           errorMessage={errors.password?.message}
           {...register('password', { required: 'Password is required' })}
+          showPassword
         />
 
         <ButtonForm type="submit" margin_block_start>

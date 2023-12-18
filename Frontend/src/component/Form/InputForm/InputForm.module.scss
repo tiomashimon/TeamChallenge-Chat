@@ -2,6 +2,7 @@
   width: 100%;
   font-size: 20px;
   margin-block-end: 16px;
+  // position: relative;
 }
 
 .label{
@@ -24,4 +25,15 @@
   -moz-border-radius: $borderRadius;
   -ms-border-radius: $borderRadius;
   -o-border-radius: $borderRadius;
+}
+
+.row{
+  position: relative;
+}
+
+.eye{
+  background-color: transparent;
+  position: absolute;
+  right: 16px;
+  top: 31%;
 }
