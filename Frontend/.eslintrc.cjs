@@ -23,6 +23,8 @@ module.exports = {
     "react-hooks/rules-of-hooks": "error",
     'react/react-in-jsx-scope': 'off',
     'jsx-a11y/label-has-associated-control': 'off',
+    'react/display-name': 'off',
+    'react/jsx-props-no-spreading': 'off',
     "react/function-component-definition": [
       2,
       {

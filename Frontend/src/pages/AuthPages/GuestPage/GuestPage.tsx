@@ -1,41 +1,26 @@
+import { useForm } from 'react-hook-form';
 import { NavLink } from 'react-router-dom';
-import AuthForm from '../../../component/Form/AuthForm/AuthForm';
 import ButtonForm from '../../../component/Form/ButtonForm/ButtonForm';
 import InputForm from '../../../component/Form/InputForm/InputForm';
 import TitleForm from '../../../component/Form/TitleForm/TitleForm';
+import { IGuestForm } from '../../../utils/interface';
 import styles from './GuestPage.module.scss';
+import AuthForm from '../../../component/Form/AuthForm/AuthForm';
 
 const GuestPage = () => {
-  // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<IGuestForm>({
+    defaultValues: {
+      nickname: '',
+    },
+  });
 
-  //   const URI = isAuth
-  //     ? `${import.meta.env.VITE_BACKEND_URL}user/`
-  //     : `${import.meta.env.VITE_BACKEND_URL}user/guest/`;
-  //   const formData = isAuth ? formDataSignIn : formDataGuest;
-  //   try {
-  //     const response = await fetch(URI, {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify(formData),
-  //     });
-
-  //     if (!response.ok) {
-  //       const errorData = await response.json();
-  //       // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-  //       isAuth ? setError(errorData) : setErrorGuest(errorData);
-  //     } else {
-  //       const data = await response.json();
-  //       setError(null);
-  //       setErrorGuest(null);
-  //       console.log(data);
-  //     }
-  //   } catch (errorMessage) {
-  //     console.error('Error sending data:', errorMessage);
-  //   }
-  // };
+  const onSubmit = handleSubmit((data) => {
+    console.log(data);
+  });
   return (
     <>
       <TitleForm titleName="Welcome" subtitleName="Please choose how you want to proceed" />
@@ -48,13 +33,14 @@ const GuestPage = () => {
         </ButtonForm>
       </div>
       <p className={styles.info}>You can create an account later</p>
-      <AuthForm>
+      <AuthForm onSubmit={onSubmit}>
         <InputForm
-          name="nickname"
+          id="nickname"
           type="text"
           placeholder="Enter your nickname"
           label="Nickname"
-          errorMessage="Nickname is required"
+          errorMessage={errors.nickname?.message}
+          {...register('nickname', { required: 'Nickname is required' })}
         />
 
         <ButtonForm type="submit" margin_inline_end>

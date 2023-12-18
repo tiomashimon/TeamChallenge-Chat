@@ -1,11 +1,27 @@
+import { useForm } from 'react-hook-form';
 import { NavLink } from 'react-router-dom';
 import AuthForm from '../../../component/Form/AuthForm/AuthForm';
 import ButtonForm from '../../../component/Form/ButtonForm/ButtonForm';
 import InputForm from '../../../component/Form/InputForm/InputForm';
 import TitleForm from '../../../component/Form/TitleForm/TitleForm';
+import { ISignInForm } from '../../../utils/interface';
 import styles from './SignInPage.module.scss';
 
 const SignInPage = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ISignInForm>({
+    defaultValues: {
+      username: '',
+      password: '',
+    },
+  });
+
+  const onSubmit = handleSubmit((data) => {
+    console.log(data);
+  });
   return (
     <>
       <TitleForm titleName="Welcome" subtitleName="Please choose how you want to proceed" />
@@ -18,21 +34,23 @@ const SignInPage = () => {
         </ButtonForm>
       </div>
 
-      <AuthForm margin_block_start>
+      <AuthForm margin_block_start onSubmit={onSubmit}>
         <InputForm
-          name="username"
+          id="username"
           type="text"
           placeholder="Enter your email or username"
           label="E-Mail / Username"
-          errorMessage="Username is required"
+          errorMessage={errors.username?.message}
+          {...register('username', { required: 'Username is required' })}
         />
 
         <InputForm
-          name="password"
+          id="password"
           type="password"
           placeholder="Enter your password"
           label="Password"
-          errorMessage="Password is required"
+          errorMessage={errors.password?.message}
+          {...register('password', { required: 'Password is required' })}
         />
 
         <div className={styles.row}>

@@ -1,26 +1,27 @@
+import { HTMLProps, forwardRef } from 'react';
 import styles from './InputForm.module.scss';
 
-interface IInputFormProps {
-  name: string;
+interface IInputFormProps extends HTMLProps<HTMLInputElement> {
   label: string;
-  type: string;
-  placeholder: string;
   errorMessage?: string;
 }
-const InputForm = ({ name, label, type, errorMessage, placeholder }: IInputFormProps) => {
-  return (
-    <div className={styles.form}>
-      <label className={styles.label} htmlFor={name}>
-        {label}
-        {errorMessage && <span className={styles.error}>{errorMessage}</span>}
-      </label>
-      <input className={styles.input} type={type} id={name} placeholder={placeholder} />
-    </div>
-  );
-};
+
+const InputForm = forwardRef<HTMLInputElement, IInputFormProps>(
+  ({ label, errorMessage, id, ...restProps }, ref) => {
+    return (
+      <div className={styles.form}>
+        <label className={styles.label} htmlFor={id}>
+          {label}
+          {errorMessage && <span className={styles.error}>{errorMessage}</span>}
+        </label>
+        <input className={styles.input} ref={ref} id={id} {...restProps} />
+      </div>
+    );
+  }
+);
 
 InputForm.defaultProps = {
-  errorMessage: 'Error',
+  errorMessage: '',
 };
 
 export default InputForm;
