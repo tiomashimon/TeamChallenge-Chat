@@ -54,7 +54,6 @@ from .tasks import delete_expired_chats
 #         return Response({'Succes':True, 'chat':serializer.data}) 
 
 
-
 class ChatCreate(CreateAPIView):
     queryset = Chat.objects.all()
     serializer_class = ChatSerializer

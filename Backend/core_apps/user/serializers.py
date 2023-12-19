@@ -17,6 +17,7 @@ class SettingsSerializer(serializers.ModelSerializer):
 class GuestSerializer(serializers.ModelSerializer):
     settings = SettingsSerializer(required=False)
     username = serializers.CharField(read_only=True)
+    is_guest = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = User
@@ -57,7 +58,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'nickname', 'username', 'password', 'password2', 'is_guest', 'settings']
+        fields = ['id', 'nickname', 'username', 'email', 'password', 'password2', 'settings']
 
     def validate(self, attrs):
         if attrs['password'] != attrs['password2']:
@@ -79,7 +80,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'nickname', 'username', 'is_guest', 'settings']
+        fields = ['id', 'nickname', 'username', 'email', 'is_guest', 'settings']
 
     def update(self, instance, validated_data):
         settings_data = validated_data.pop('settings', None)
