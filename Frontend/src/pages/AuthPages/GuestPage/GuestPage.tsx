@@ -1,11 +1,11 @@
 import { useForm } from 'react-hook-form';
 import { NavLink } from 'react-router-dom';
+import AuthForm from '../../../component/Form/AuthForm/AuthForm';
 import ButtonForm from '../../../component/Form/ButtonForm/ButtonForm';
 import InputForm from '../../../component/Form/InputForm/InputForm';
 import TitleForm from '../../../component/Form/TitleForm/TitleForm';
 import { IGuestForm } from '../../../utils/interface';
 import styles from './GuestPage.module.scss';
-import AuthForm from '../../../component/Form/AuthForm/AuthForm';
 
 const GuestPage = () => {
   const {
@@ -25,12 +25,14 @@ const GuestPage = () => {
     <>
       <TitleForm titleName="Welcome" subtitleName="Please choose how you want to proceed" />
       <div className={styles.buttons}>
-        <ButtonForm type="button" not_active margin_inline_end>
-          <NavLink to="/signIn">Sign in</NavLink>
-        </ButtonForm>
-        <ButtonForm type="button">
-          <NavLink to="/">Guest</NavLink>
-        </ButtonForm>
+        <NavLink to="/signIn">
+          <ButtonForm type="button" not_active>
+            Sign in
+          </ButtonForm>
+        </NavLink>
+        <NavLink to="/">
+          <ButtonForm type="button">Guest</ButtonForm>
+        </NavLink>
       </div>
       <p className={styles.info}>You can create an account later</p>
       <AuthForm onSubmit={onSubmit}>
@@ -42,7 +44,7 @@ const GuestPage = () => {
           {...register('nickname', { required: 'Nickname is required' })}
         />
 
-        <ButtonForm type="submit" margin_inline_end>
+        <ButtonForm type="submit" margin_block_start>
           Sign Up
         </ButtonForm>
       </AuthForm>

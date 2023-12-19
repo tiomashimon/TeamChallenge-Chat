@@ -26,12 +26,14 @@ const SignInPage = () => {
     <>
       <TitleForm titleName="Welcome" subtitleName="Please choose how you want to proceed" />
       <div className={styles.buttons}>
-        <ButtonForm type="submit" margin_inline_end>
-          <NavLink to="/signIn">Sign in</NavLink>
-        </ButtonForm>
-        <ButtonForm type="submit" not_active>
-          <NavLink to="/">Guest</NavLink>
-        </ButtonForm>
+        <NavLink to="/signIn">
+          <ButtonForm type="submit">Sign in</ButtonForm>
+        </NavLink>
+        <NavLink to="/">
+          <ButtonForm type="submit" not_active>
+            Guest
+          </ButtonForm>
+        </NavLink>
       </div>
 
       <AuthForm margin_block_start onSubmit={onSubmit}>
