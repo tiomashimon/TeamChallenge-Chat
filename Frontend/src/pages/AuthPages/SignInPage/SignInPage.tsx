@@ -4,6 +4,7 @@ import AuthForm from '../../../component/Form/AuthForm/AuthForm';
 import ButtonForm from '../../../component/Form/ButtonForm/ButtonForm';
 import InputForm from '../../../component/Form/InputForm/InputForm';
 import TitleForm from '../../../component/Form/TitleForm/TitleForm';
+import { useLoginMutation } from '../../../store/reducers/userApi';
 import { ISignInForm } from '../../../utils/interface';
 import styles from './SignInPage.module.scss';
 
@@ -19,8 +20,10 @@ const SignInPage = () => {
     },
   });
 
+  const [login] = useLoginMutation();
+
   const onSubmit = handleSubmit((data) => {
-    console.log(data);
+    login(data);
   });
   return (
     <>

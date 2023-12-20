@@ -3,6 +3,7 @@ import AuthForm from '../../../component/Form/AuthForm/AuthForm';
 import ButtonForm from '../../../component/Form/ButtonForm/ButtonForm';
 import InputForm from '../../../component/Form/InputForm/InputForm';
 import TitleForm from '../../../component/Form/TitleForm/TitleForm';
+import { useRegisterUserMutation } from '../../../store/reducers/userApi';
 import { IRegistrationForm } from '../../../utils/interface';
 
 const RegistrationPage = () => {
@@ -19,8 +20,17 @@ const RegistrationPage = () => {
     },
   });
 
+  const [registerUser] = useRegisterUserMutation();
+
   const onSubmit = handleSubmit((data) => {
-    console.log(data);
+    const dataForm = {
+      nickname: data.username,
+      username: data.username,
+      email: data.email,
+      password: data.password,
+      password2: data.password,
+    };
+    registerUser(dataForm);
   });
   return (
     <>

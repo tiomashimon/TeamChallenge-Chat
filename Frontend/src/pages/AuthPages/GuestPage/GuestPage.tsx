@@ -4,6 +4,7 @@ import AuthForm from '../../../component/Form/AuthForm/AuthForm';
 import ButtonForm from '../../../component/Form/ButtonForm/ButtonForm';
 import InputForm from '../../../component/Form/InputForm/InputForm';
 import TitleForm from '../../../component/Form/TitleForm/TitleForm';
+import { useRegisterGuestMutation } from '../../../store/reducers/guestApi';
 import { IGuestForm } from '../../../utils/interface';
 import styles from './GuestPage.module.scss';
 
@@ -18,8 +19,10 @@ const GuestPage = () => {
     },
   });
 
+  const [registerGuest] = useRegisterGuestMutation();
+
   const onSubmit = handleSubmit((data) => {
-    console.log(data);
+    registerGuest(data);
   });
   return (
     <>
