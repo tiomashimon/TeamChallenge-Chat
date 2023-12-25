@@ -35,22 +35,23 @@ APP_DIR = ROOT_DIR / "core_apps"
 
 # Application definition1
 
-THIRD_PARTY_APPS = ['corsheaders', ]
+THIRD_PARTY_APPS = [
+    'corsheaders',
+    'rest_framework',
+    'django_filters',
+    'rest_framework_simplejwt',
+    'drf_yasg',
+    'django_rest_passwordreset',
+    'celery_progress',
+    'django_celery_beat',]
 
 DJANGO_APPS = [
-    'celery_progress',
-    'django_celery_beat',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    'rest_framework',
-    'django_filters',
-    'rest_framework_simplejwt',
-    'drf_yasg',
-    'django_rest_passwordreset',
 ]
 
 LOCAL_APPS = [
@@ -208,3 +209,25 @@ DJANGO_REST_PASSWORDRESET_TOKEN_CONFIG = {
 }
 
 DJANGO_REST_MULTITOKENAUTH_RESET_TOKEN_EXPIRY_TIME = 0.1  # - time in hours about how long the token is active (Default: 24)
+
+
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "%(levelname)s %(name)-12s %(asctime)s %(module)s "
+            "%(process)d %(thread)d %(message)s"
+        }
+    },
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
+    },
+    "root": {"level": "INFO", "handlers": ["console"]},
+}
+
