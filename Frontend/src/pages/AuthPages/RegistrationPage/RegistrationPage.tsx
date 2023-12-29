@@ -1,26 +1,43 @@
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import { TypeOf, object, string } from 'zod';
 import AuthForm from '../../../component/Form/AuthForm/AuthForm';
 import ButtonForm from '../../../component/Form/ButtonForm/ButtonForm';
 import InputForm from '../../../component/Form/InputForm/InputForm';
 import TitleForm from '../../../component/Form/TitleForm/TitleForm';
-import { useRegisterUserMutation } from '../../../store/reducers/userApi';
-import { IRegistrationForm } from '../../../utils/interface';
+import { useRegisterUserMutation } from '../../../store/api/authApi';
+
+const registerSchema = object({
+  nickname: string().min(1, 'Nickname is required').max(20, 'Nickname is too long'),
+  username: string().min(1, 'Username is required').max(20, 'Username is too long'),
+  email: string().min(1, 'Email is required').email('Email is invalid'),
+  password: string()
+    .min(1, 'Password is required')
+    .max(20, 'Password is too long')
+    .refine((value) => value.length >= 8, { message: 'Password must be at least 8 characters' }),
+});
+
+export type TRegisterInput = TypeOf<typeof registerSchema>;
 
 const RegistrationPage = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<IRegistrationForm>({
-    defaultValues: {
-      nickname: '',
-      username: '',
-      email: '',
-      password: '',
-    },
+  } = useForm<TRegisterInput>({
+    resolver: zodResolver(registerSchema),
   });
 
-  const [registerUser] = useRegisterUserMutation();
+  const [registerUser, { isLoading, isSuccess, error: registerError }] = useRegisterUserMutation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isSuccess) {
+      navigate('/chats');
+    }
+  }, [isLoading, navigate, isSuccess]);
 
   const onSubmit = handleSubmit((data) => {
     const dataForm = {
@@ -43,7 +60,7 @@ const RegistrationPage = () => {
           label="Nickname"
           placeholder="Enter your nickname"
           errorMessage={errors.nickname?.message}
-          {...register('nickname', { required: 'Nickname is required' })}
+          {...register('nickname')}
         />
         <InputForm
           id="username"
@@ -51,7 +68,7 @@ const RegistrationPage = () => {
           label="Username"
           placeholder="Enter your username"
           errorMessage={errors.username?.message}
-          {...register('username', { required: 'Username is required' })}
+          {...register('username')}
         />
         <InputForm
           id="email"
@@ -59,14 +76,14 @@ const RegistrationPage = () => {
           label="E-Mail Adress"
           placeholder="Enter your email"
           errorMessage={errors.email?.message}
-          {...register('email', { required: 'Email is required' })}
+          {...register('email')}
         />
         <InputForm
           id="password"
           label="Password"
           placeholder="Enter your password"
           errorMessage={errors.password?.message}
-          {...register('password', { required: 'Password is required' })}
+          {...register('password')}
           showPassword
         />
 
@@ -74,6 +91,7 @@ const RegistrationPage = () => {
           Submit
         </ButtonForm>
       </AuthForm>
+      {registerError. && <p>{registerError.status}</p>}
     </>
   );
 };

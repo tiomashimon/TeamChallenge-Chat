@@ -1,22 +1,40 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { TypeOf, object, string } from 'zod';
 import AuthForm from '../../../component/Form/AuthForm/AuthForm';
 import ButtonForm from '../../../component/Form/ButtonForm/ButtonForm';
 import InputForm from '../../../component/Form/InputForm/InputForm';
 import TitleForm from '../../../component/Form/TitleForm/TitleForm';
-import { IResetPassForm } from '../../../utils/interface';
+
+const registerSchema = object({
+  code: string().min(1, 'Code is required'),
+  email: string().min(1, 'Email is required').email('Email is invalid'),
+  password: string()
+    .min(1, 'Password is required')
+    .max(20, 'Password is too long')
+    .refine((value) => value.length >= 8, { message: 'Password must be at least 8 characters' }),
+});
+
+export type TResetPassForm = TypeOf<typeof registerSchema>;
 
 const ResetPassPage = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<IResetPassForm>({
-    defaultValues: {
-      email: '',
-      code: '',
-      password: '',
-    },
+  } = useForm<TResetPassForm>({
+    resolver: zodResolver(registerSchema),
   });
+
+  // const [registerUser, { isLoading, isSuccess }] = useRegisterUserMutation();
+  // const navigate = useNavigate();
+
+  // useEffect(() => {
+  //   if (isSuccess) {
+  //     navigate('/signIn');
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [isLoading, navigate, isSuccess]);
 
   const onSubmit = handleSubmit((data) => {
     console.log(data);
@@ -31,7 +49,7 @@ const ResetPassPage = () => {
           label="E-Mail"
           placeholder="Enter your email"
           errorMessage={errors.email?.message}
-          {...register('email', { required: 'Email is required' })}
+          {...register('email')}
         />
         <InputForm
           id="code"
@@ -39,14 +57,14 @@ const ResetPassPage = () => {
           label="Code"
           placeholder="Enter code"
           errorMessage={errors.code?.message}
-          {...register('code', { required: 'Code is required' })}
+          {...register('code')}
         />
         <InputForm
           id="password"
           label="Password"
           placeholder="Enter your password"
           errorMessage={errors.password?.message}
-          {...register('password', { required: 'Password is required' })}
+          {...register('password')}
           showPassword
         />
 

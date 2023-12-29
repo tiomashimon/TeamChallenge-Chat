@@ -1,27 +1,41 @@
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { TypeOf, object, string } from 'zod';
 import AuthForm from '../../../component/Form/AuthForm/AuthForm';
 import ButtonForm from '../../../component/Form/ButtonForm/ButtonForm';
 import InputForm from '../../../component/Form/InputForm/InputForm';
 import TitleForm from '../../../component/Form/TitleForm/TitleForm';
-import { useRegisterGuestMutation } from '../../../store/reducers/guestApi';
-import { IGuestForm } from '../../../utils/interface';
+import { useRegisterGuestMutation } from '../../../store/api/guestApi';
 import styles from './GuestPage.module.scss';
+
+const registerSchema = object({
+  nickname: string().min(1, 'Nickname is required').max(20, 'Nickname is too long'),
+});
+
+export type TRegisterInput = TypeOf<typeof registerSchema>;
 
 const GuestPage = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<IGuestForm>({
-    defaultValues: {
-      nickname: '',
-    },
+  } = useForm<TRegisterInput>({
+    resolver: zodResolver(registerSchema),
   });
 
-  const [registerGuest] = useRegisterGuestMutation();
+  const [registerGuest, { isLoading, isSuccess }] = useRegisterGuestMutation();
 
-  const onSubmit = handleSubmit((data) => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isSuccess) {
+      navigate('/chats');
+    }
+  }, [isLoading, navigate, isSuccess]);
+
+  const onSubmit = handleSubmit(async (data) => {
     registerGuest(data);
   });
   return (
@@ -44,7 +58,7 @@ const GuestPage = () => {
           placeholder="Enter your nickname"
           label="Nickname"
           errorMessage={errors.nickname?.message}
-          {...register('nickname', { required: 'Nickname is required' })}
+          {...register('nickname')}
         />
 
         <ButtonForm type="submit" margin_block_start>

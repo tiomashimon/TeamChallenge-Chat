@@ -1,29 +1,45 @@
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { TypeOf, object, string } from 'zod';
 import AuthForm from '../../../component/Form/AuthForm/AuthForm';
 import ButtonForm from '../../../component/Form/ButtonForm/ButtonForm';
 import InputForm from '../../../component/Form/InputForm/InputForm';
 import TitleForm from '../../../component/Form/TitleForm/TitleForm';
-import { useLoginMutation } from '../../../store/reducers/userApi';
-import { ISignInForm } from '../../../utils/interface';
+import { useLoginUserMutation } from '../../../store/api/authApi';
 import styles from './SignInPage.module.scss';
+
+const registerSchema = object({
+  username: string().min(1, 'Username is required'),
+  password: string()
+    .min(1, 'Password is required')
+    .max(20, 'Password is too long')
+    .refine((value) => value.length >= 8, { message: 'Password must be at least 8 characters' }),
+});
+
+export type TSignInInput = TypeOf<typeof registerSchema>;
 
 const SignInPage = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<ISignInForm>({
-    defaultValues: {
-      username: '',
-      password: '',
-    },
+  } = useForm<TSignInInput>({
+    resolver: zodResolver(registerSchema),
   });
 
-  const [login] = useLoginMutation();
+  const [loginUser, { isLoading, isSuccess, error: authError }] = useLoginUserMutation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isSuccess) {
+      navigate('/chats');
+    }
+  }, [isLoading, navigate, isSuccess]);
 
   const onSubmit = handleSubmit((data) => {
-    login(data);
+    loginUser(data);
   });
   return (
     <>
@@ -46,7 +62,7 @@ const SignInPage = () => {
           placeholder="Enter your email or username"
           label="E-Mail / Username"
           errorMessage={errors.username?.message}
-          {...register('username', { required: 'Username is required' })}
+          {...register('username')}
         />
 
         <InputForm
@@ -54,7 +70,7 @@ const SignInPage = () => {
           placeholder="Enter your password"
           label="Password"
           errorMessage={errors.password?.message}
-          {...register('password', { required: 'Password is required' })}
+          {...register('password')}
           showPassword
         />
 
@@ -74,6 +90,7 @@ const SignInPage = () => {
           Log In
         </ButtonForm>
       </AuthForm>
+      {authError && <div className={styles.error}>{authError.data.detail}</div>}
     </>
   );
 };

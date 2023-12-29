@@ -36,18 +36,19 @@ interface ISettingsUser {
   is_show_notifications: boolean;
   language: string;
 }
-interface IUser {
+export interface IUser {
   id: number;
   email: string;
   username: string;
   nickname: string;
-  settings: ISettingsUser;
+  settings?: ISettingsUser;
 }
 
 export interface IResponseRegistration {
   token: IToken;
   user: IUser;
 }
+export interface IResponseLogin extends IToken {}
 
 export interface IRequestRegistration extends IRegistrationForm {}
 export interface IRequestLogin extends IAuthForm {}
