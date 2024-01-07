@@ -8,6 +8,7 @@ import ButtonForm from '../../../component/Form/ButtonForm/ButtonForm';
 import InputForm from '../../../component/Form/InputForm/InputForm';
 import TitleForm from '../../../component/Form/TitleForm/TitleForm';
 import { useRegisterUserMutation } from '../../../store/api/authApi';
+import { ErrorType } from '../../../utils/interface';
 
 const registerSchema = object({
   nickname: string().min(1, 'Nickname is required').max(20, 'Nickname is too long'),
@@ -49,6 +50,20 @@ const RegistrationPage = () => {
     };
     registerUser(dataForm);
   });
+
+  const errorHandler = (error: ErrorType) => {
+    if (error) {
+      if ('status' in error) {
+        const errMsg = 'error' in error ? error.error : JSON.stringify(error.data);
+
+        return <div>{errMsg}</div>;
+      }
+
+      return <div>{error.message}</div>;
+    }
+    return <div>{error}</div>;
+  };
+
   return (
     <>
       <TitleForm titleName="Registration" subtitleName="Please fill in the data" />
@@ -91,7 +106,7 @@ const RegistrationPage = () => {
           Submit
         </ButtonForm>
       </AuthForm>
-      {registerError. && <p>{registerError.status}</p>}
+      {registerError && errorHandler(registerError)}
     </>
   );
 };

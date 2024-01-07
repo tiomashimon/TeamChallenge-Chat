@@ -7,11 +7,11 @@ import AuthForm from '../../../component/Form/AuthForm/AuthForm';
 import ButtonForm from '../../../component/Form/ButtonForm/ButtonForm';
 import InputForm from '../../../component/Form/InputForm/InputForm';
 import TitleForm from '../../../component/Form/TitleForm/TitleForm';
-import { useRegisterGuestMutation } from '../../../store/api/guestApi';
 import styles from './GuestPage.module.scss';
+import { useRegisterGuestMutation } from '../../../store/api/authApi';
 
 const registerSchema = object({
-  nickname: string().min(1, 'Nickname is required').max(20, 'Nickname is too long'),
+  nickname: string().min(2, 'Nickname is required').max(20, 'Nickname is too long'),
 });
 
 export type TRegisterInput = TypeOf<typeof registerSchema>;

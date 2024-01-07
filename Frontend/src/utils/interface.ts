@@ -1,3 +1,6 @@
+import { SerializedError } from '@reduxjs/toolkit';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
+
 export interface IGuestForm {
   nickname: string;
 }
@@ -55,3 +58,5 @@ export interface IRequestLogin extends IAuthForm {}
 export interface IRequestGuest extends IGuestForm {}
 export interface IRequestResetPass extends IResetPassForm {}
 export interface IRequestSignIn extends ISignInForm {}
+
+export type ErrorType = FetchBaseQueryError | SerializedError | undefined;

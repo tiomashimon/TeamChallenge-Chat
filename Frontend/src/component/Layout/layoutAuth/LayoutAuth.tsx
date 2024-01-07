@@ -1,9 +1,21 @@
+import { useEffect } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import angleLeft from '../../../assets/img/angle-left.png';
+import { logoutRememberMe } from '../../../store/reducers/rememberMe';
+import { useAppDispatch, useAppSelector } from '../../../store/store';
 import styles from './LayoutAuth.module.scss';
 
 const LayoutAuth = () => {
   const { pathname } = useLocation();
+  const dispatch = useAppDispatch();
+  const { tokenAccess } = useAppSelector((state) => state.tokenState);
+
+  useEffect(() => {
+    if (!tokenAccess) {
+      dispatch(logoutRememberMe());
+    }
+  }, [tokenAccess, dispatch]);
+
   return (
     <div className={styles.container}>
       <div className={styles.modal}>

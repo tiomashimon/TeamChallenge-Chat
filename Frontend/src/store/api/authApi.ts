@@ -1,12 +1,15 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import Cookies from 'js-cookie';
 import {
+  IRequestGuest,
   IRequestLogin,
   IRequestRegistration,
   IResponseLogin,
   IResponseRegistration,
 } from '../../utils/interface';
+import { logoutToken, setToken } from '../reducers/tokenSlice';
 import { setUser } from '../reducers/userSlice';
+// eslint-disable-next-line import/no-cycle
+import { RootState } from '../store';
 
 export const authApi = createApi({
   reducerPath: 'authApi',
@@ -20,18 +23,14 @@ export const authApi = createApi({
         method: 'POST',
         body,
       }),
-      async onQueryStarted(args, { queryFulfilled }) {
+      async onQueryStarted(args, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
 
           const accessToken = data.access;
           const refreshToken = data.refresh;
 
-          const currentDate = new Date();
-          const expirationTime = new Date(currentDate.getTime() + 30 * 1000);
-
-          Cookies.set('accessToken', accessToken, { expires: expirationTime });
-          Cookies.set('refreshToken', refreshToken, { expires: expirationTime });
+          dispatch(setToken({ tokenAccess: accessToken, tokenRefresh: refreshToken }));
           // dispatch(setUser(data.user));
         } catch (error) {
           console.log(error);
@@ -51,18 +50,73 @@ export const authApi = createApi({
           const accessToken = data.token.access;
           const refreshToken = data.token.refresh;
 
-          const currentDate = new Date();
-          const expirationTime = new Date(currentDate.getTime() + 30 * 1000);
-
-          Cookies.set('accessToken', accessToken, { expires: expirationTime });
-          Cookies.set('refreshToken', refreshToken, { expires: expirationTime });
+          dispatch(setToken({ tokenAccess: accessToken, tokenRefresh: refreshToken }));
           dispatch(setUser(data.user));
         } catch (error) {
           console.log(error);
         }
       },
     }),
+    registerGuest: build.mutation<IResponseRegistration, IRequestGuest>({
+      query: (body) => ({
+        url: '/user/guest/',
+        method: 'POST',
+        body,
+      }),
+      async onQueryStarted(args, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+
+          const accessToken = data.token.access;
+          const refreshToken = data.token.refresh;
+          dispatch(setToken({ tokenAccess: accessToken, tokenRefresh: refreshToken }));
+          dispatch(setUser(data.user));
+        } catch (error) {
+          console.log(error);
+        }
+      },
+    }),
+    tokenRefresh: build.mutation<{ access: string }, { refresh: string }>({
+      query: (body) => ({
+        url: '/user/token/refresh/',
+        method: 'POST',
+        body,
+      }),
+      async onQueryStarted(args, { dispatch, queryFulfilled, getState }) {
+        try {
+          const { data } = await queryFulfilled;
+          const accessToken = data.access;
+
+          const { tokenState } = getState() as RootState;
+          dispatch(setToken({ tokenAccess: accessToken, tokenRefresh: tokenState.tokenRefresh }));
+        } catch (error) {
+          console.log(error);
+        }
+      },
+    }),
+    isVerified: build.mutation({
+      query: (body) => ({
+        url: '/user/token/verify/',
+        method: 'POST',
+        body,
+      }),
+
+      async onQueryStarted(args, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled;
+        } catch (error) {
+          console.log(error);
+          dispatch(logoutToken());
+        }
+      },
+    }),
   }),
 });
 
-export const { useLoginUserMutation, useRegisterUserMutation } = authApi;
+export const {
+  useLoginUserMutation,
+  useRegisterUserMutation,
+  useTokenRefreshMutation,
+  useIsVerifiedMutation,
+  useRegisterGuestMutation,
+} = authApi;

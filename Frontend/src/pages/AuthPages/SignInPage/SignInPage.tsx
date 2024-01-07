@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { TypeOf, object, string } from 'zod';
@@ -8,12 +8,15 @@ import ButtonForm from '../../../component/Form/ButtonForm/ButtonForm';
 import InputForm from '../../../component/Form/InputForm/InputForm';
 import TitleForm from '../../../component/Form/TitleForm/TitleForm';
 import { useLoginUserMutation } from '../../../store/api/authApi';
+import { setRememberMe } from '../../../store/reducers/rememberMe';
+import { useAppDispatch } from '../../../store/store';
+import { ErrorType } from '../../../utils/interface';
 import styles from './SignInPage.module.scss';
 
 const registerSchema = object({
   username: string().min(1, 'Username is required'),
   password: string()
-    .min(1, 'Password is required')
+    .min(2, 'Password is required')
     .max(20, 'Password is too long')
     .refine((value) => value.length >= 8, { message: 'Password must be at least 8 characters' }),
 });
@@ -29,8 +32,13 @@ const SignInPage = () => {
     resolver: zodResolver(registerSchema),
   });
 
-  const [loginUser, { isLoading, isSuccess, error: authError }] = useLoginUserMutation();
+  const [loginUser, { isLoading, isSuccess, error: loginError }] = useLoginUserMutation();
+
+  const [rememberMeState, setRememberMeState] = useState(false);
+
   const navigate = useNavigate();
+
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (isSuccess) {
@@ -40,7 +48,27 @@ const SignInPage = () => {
 
   const onSubmit = handleSubmit((data) => {
     loginUser(data);
+    if (rememberMeState) {
+      dispatch(setRememberMe(rememberMeState));
+    }
   });
+
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRememberMeState(event.target.checked);
+  };
+
+  const errorHandler = (error: ErrorType) => {
+    if (error) {
+      if ('status' in error) {
+        const errMsg = 'error' in error ? error.error : JSON.stringify(error.data);
+
+        return <div>{errMsg}</div>;
+      }
+
+      return <div>{error.message}</div>;
+    }
+    return <div>{error}</div>;
+  };
   return (
     <>
       <TitleForm titleName="Welcome" subtitleName="Please choose how you want to proceed" />
@@ -59,8 +87,8 @@ const SignInPage = () => {
         <InputForm
           id="username"
           type="text"
-          placeholder="Enter your email or username"
-          label="E-Mail / Username"
+          placeholder="Enter your username"
+          label="Username"
           errorMessage={errors.username?.message}
           {...register('username')}
         />
@@ -76,7 +104,14 @@ const SignInPage = () => {
 
         <div className={styles.row}>
           <label htmlFor="remember" className={styles.check}>
-            <input type="checkbox" id="remember" name="remember" className={styles.check_input} />
+            <input
+              type="checkbox"
+              id="remember"
+              name="remember"
+              className={styles.check_input}
+              onChange={handleCheckboxChange}
+              checked={rememberMeState}
+            />
             <span className={styles.check_box} />
             Remember me
           </label>
@@ -90,7 +125,7 @@ const SignInPage = () => {
           Log In
         </ButtonForm>
       </AuthForm>
-      {authError && <div className={styles.error}>{authError.data.detail}</div>}
+      {loginError && errorHandler(loginError)}
     </>
   );
 };
