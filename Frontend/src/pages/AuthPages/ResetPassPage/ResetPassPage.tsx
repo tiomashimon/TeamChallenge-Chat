@@ -1,21 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { TypeOf, object, string } from 'zod';
 import AuthForm from '../../../component/Form/AuthForm/AuthForm';
 import ButtonForm from '../../../component/Form/ButtonForm/ButtonForm';
 import InputForm from '../../../component/Form/InputForm/InputForm';
 import TitleForm from '../../../component/Form/TitleForm/TitleForm';
-
-const registerSchema = object({
-  code: string().min(1, 'Code is required'),
-  email: string().min(1, 'Email is required').email('Email is invalid'),
-  password: string()
-    .min(1, 'Password is required')
-    .max(20, 'Password is too long')
-    .refine((value) => value.length >= 8, { message: 'Password must be at least 8 characters' }),
-});
-
-export type TResetPassForm = TypeOf<typeof registerSchema>;
+import { TResetPassForm } from '../../../utils/type';
+import { resetPasswordSchema } from '../../../utils/zodSchema';
 
 const ResetPassPage = () => {
   const {
@@ -23,18 +13,8 @@ const ResetPassPage = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<TResetPassForm>({
-    resolver: zodResolver(registerSchema),
+    resolver: zodResolver(resetPasswordSchema),
   });
-
-  // const [registerUser, { isLoading, isSuccess }] = useRegisterUserMutation();
-  // const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   if (isSuccess) {
-  //     navigate('/signIn');
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [isLoading, navigate, isSuccess]);
 
   const onSubmit = handleSubmit((data) => {
     console.log(data);

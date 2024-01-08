@@ -2,27 +2,22 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { TypeOf, object, string } from 'zod';
 import AuthForm from '../../../component/Form/AuthForm/AuthForm';
 import ButtonForm from '../../../component/Form/ButtonForm/ButtonForm';
 import InputForm from '../../../component/Form/InputForm/InputForm';
 import TitleForm from '../../../component/Form/TitleForm/TitleForm';
 import styles from './GuestPage.module.scss';
 import { useRegisterGuestMutation } from '../../../store/api/authApi';
-
-const registerSchema = object({
-  nickname: string().min(2, 'Nickname is required').max(20, 'Nickname is too long'),
-});
-
-export type TRegisterInput = TypeOf<typeof registerSchema>;
+import { TRegisterGuestInput } from '../../../utils/type';
+import { registerGuestSchema } from '../../../utils/zodSchema';
 
 const GuestPage = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<TRegisterInput>({
-    resolver: zodResolver(registerSchema),
+  } = useForm<TRegisterGuestInput>({
+    resolver: zodResolver(registerGuestSchema),
   });
 
   const [registerGuest, { isLoading, isSuccess }] = useRegisterGuestMutation();

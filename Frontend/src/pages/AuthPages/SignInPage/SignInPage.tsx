@@ -2,7 +2,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { TypeOf, object, string } from 'zod';
 import AuthForm from '../../../component/Form/AuthForm/AuthForm';
 import ButtonForm from '../../../component/Form/ButtonForm/ButtonForm';
 import InputForm from '../../../component/Form/InputForm/InputForm';
@@ -10,18 +9,10 @@ import TitleForm from '../../../component/Form/TitleForm/TitleForm';
 import { useLoginUserMutation } from '../../../store/api/authApi';
 import { setRememberMe } from '../../../store/reducers/rememberMe';
 import { useAppDispatch } from '../../../store/store';
-import { ErrorType } from '../../../utils/interface';
+import errorHandler from '../../../utils/errorHandler';
+import { TSignInInput } from '../../../utils/type';
+import { signInSchema } from '../../../utils/zodSchema';
 import styles from './SignInPage.module.scss';
-
-const registerSchema = object({
-  username: string().min(1, 'Username is required'),
-  password: string()
-    .min(2, 'Password is required')
-    .max(20, 'Password is too long')
-    .refine((value) => value.length >= 8, { message: 'Password must be at least 8 characters' }),
-});
-
-export type TSignInInput = TypeOf<typeof registerSchema>;
 
 const SignInPage = () => {
   const {
@@ -29,7 +20,7 @@ const SignInPage = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<TSignInInput>({
-    resolver: zodResolver(registerSchema),
+    resolver: zodResolver(signInSchema),
   });
 
   const [loginUser, { isLoading, isSuccess, error: loginError }] = useLoginUserMutation();
@@ -57,18 +48,6 @@ const SignInPage = () => {
     setRememberMeState(event.target.checked);
   };
 
-  const errorHandler = (error: ErrorType) => {
-    if (error) {
-      if ('status' in error) {
-        const errMsg = 'error' in error ? error.error : JSON.stringify(error.data);
-
-        return <div>{errMsg}</div>;
-      }
-
-      return <div>{error.message}</div>;
-    }
-    return <div>{error}</div>;
-  };
   return (
     <>
       <TitleForm titleName="Welcome" subtitleName="Please choose how you want to proceed" />
@@ -89,7 +68,9 @@ const SignInPage = () => {
           type="text"
           placeholder="Enter your username"
           label="Username"
-          errorMessage={errors.username?.message}
+          errorMessage={
+            loginError ? errorHandler(loginError, 'username') : errors.username?.message
+          }
           {...register('username')}
         />
 
@@ -97,7 +78,9 @@ const SignInPage = () => {
           id="password"
           placeholder="Enter your password"
           label="Password"
-          errorMessage={errors.password?.message}
+          errorMessage={
+            loginError ? errorHandler(loginError, 'password') : errors.password?.message
+          }
           {...register('password')}
           showPassword
         />
@@ -125,7 +108,6 @@ const SignInPage = () => {
           Log In
         </ButtonForm>
       </AuthForm>
-      {loginError && errorHandler(loginError)}
     </>
   );
 };

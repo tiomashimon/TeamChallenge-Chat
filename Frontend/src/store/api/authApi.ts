@@ -1,11 +1,12 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import {
-  IRequestGuest,
-  IRequestLogin,
-  IRequestRegistration,
-  IResponseLogin,
-  IResponseRegistration,
-} from '../../utils/interface';
+  TRegisterGuestInput,
+  TRegisterInput,
+  TResponseToken,
+  TSignInInput,
+  TUserResponseRegister,
+} from '../../utils/type';
+import { responseTokenSchema, userResponseRegisterSchema } from '../../utils/zodSchema';
 import { logoutToken, setToken } from '../reducers/tokenSlice';
 import { setUser } from '../reducers/userSlice';
 // eslint-disable-next-line import/no-cycle
@@ -17,7 +18,7 @@ export const authApi = createApi({
     baseUrl: import.meta.env.VITE_BACKEND_URL,
   }),
   endpoints: (build) => ({
-    loginUser: build.mutation<IResponseLogin, IRequestLogin>({
+    loginUser: build.mutation<TResponseToken, TSignInInput>({
       query: (body) => ({
         url: '/user/token/',
         method: 'POST',
@@ -26,6 +27,8 @@ export const authApi = createApi({
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
+
+          responseTokenSchema.parse(data);
 
           const accessToken = data.access;
           const refreshToken = data.refresh;
@@ -37,7 +40,7 @@ export const authApi = createApi({
         }
       },
     }),
-    registerUser: build.mutation<IResponseRegistration, IRequestRegistration>({
+    registerUser: build.mutation<TUserResponseRegister, TRegisterInput>({
       query: (body) => ({
         url: '/user/',
         method: 'POST',
@@ -46,6 +49,8 @@ export const authApi = createApi({
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
+
+          userResponseRegisterSchema.parse(data);
 
           const accessToken = data.token.access;
           const refreshToken = data.token.refresh;
@@ -57,7 +62,7 @@ export const authApi = createApi({
         }
       },
     }),
-    registerGuest: build.mutation<IResponseRegistration, IRequestGuest>({
+    registerGuest: build.mutation<TUserResponseRegister, TRegisterGuestInput>({
       query: (body) => ({
         url: '/user/guest/',
         method: 'POST',
@@ -66,6 +71,8 @@ export const authApi = createApi({
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
+
+          userResponseRegisterSchema.parse(data);
 
           const accessToken = data.token.access;
           const refreshToken = data.token.refresh;
@@ -94,7 +101,7 @@ export const authApi = createApi({
         }
       },
     }),
-    isVerified: build.mutation({
+    isVerified: build.mutation<Record<string, never>, { token: string }>({
       query: (body) => ({
         url: '/user/token/verify/',
         method: 'POST',

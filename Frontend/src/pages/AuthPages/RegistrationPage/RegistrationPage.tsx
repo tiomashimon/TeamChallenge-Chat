@@ -2,25 +2,14 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { TypeOf, object, string } from 'zod';
 import AuthForm from '../../../component/Form/AuthForm/AuthForm';
 import ButtonForm from '../../../component/Form/ButtonForm/ButtonForm';
 import InputForm from '../../../component/Form/InputForm/InputForm';
 import TitleForm from '../../../component/Form/TitleForm/TitleForm';
 import { useRegisterUserMutation } from '../../../store/api/authApi';
-import { ErrorType } from '../../../utils/interface';
-
-const registerSchema = object({
-  nickname: string().min(1, 'Nickname is required').max(20, 'Nickname is too long'),
-  username: string().min(1, 'Username is required').max(20, 'Username is too long'),
-  email: string().min(1, 'Email is required').email('Email is invalid'),
-  password: string()
-    .min(1, 'Password is required')
-    .max(20, 'Password is too long')
-    .refine((value) => value.length >= 8, { message: 'Password must be at least 8 characters' }),
-});
-
-export type TRegisterInput = TypeOf<typeof registerSchema>;
+import errorHandler from '../../../utils/errorHandler';
+import { TRegisterInput } from '../../../utils/type';
+import { registerSchema } from '../../../utils/zodSchema';
 
 const RegistrationPage = () => {
   const {
@@ -51,19 +40,6 @@ const RegistrationPage = () => {
     registerUser(dataForm);
   });
 
-  const errorHandler = (error: ErrorType) => {
-    if (error) {
-      if ('status' in error) {
-        const errMsg = 'error' in error ? error.error : JSON.stringify(error.data);
-
-        return <div>{errMsg}</div>;
-      }
-
-      return <div>{error.message}</div>;
-    }
-    return <div>{error}</div>;
-  };
-
   return (
     <>
       <TitleForm titleName="Registration" subtitleName="Please fill in the data" />
@@ -74,7 +50,9 @@ const RegistrationPage = () => {
           type="text"
           label="Nickname"
           placeholder="Enter your nickname"
-          errorMessage={errors.nickname?.message}
+          errorMessage={
+            registerError ? errorHandler(registerError, 'nickname') : errors.nickname?.message
+          }
           {...register('nickname')}
         />
         <InputForm
@@ -82,7 +60,9 @@ const RegistrationPage = () => {
           type="text"
           label="Username"
           placeholder="Enter your username"
-          errorMessage={errors.username?.message}
+          errorMessage={
+            registerError ? errorHandler(registerError, 'username') : errors.username?.message
+          }
           {...register('username')}
         />
         <InputForm
@@ -90,14 +70,18 @@ const RegistrationPage = () => {
           type="email"
           label="E-Mail Adress"
           placeholder="Enter your email"
-          errorMessage={errors.email?.message}
+          errorMessage={
+            registerError ? errorHandler(registerError, 'email') : errors.email?.message
+          }
           {...register('email')}
         />
         <InputForm
           id="password"
           label="Password"
           placeholder="Enter your password"
-          errorMessage={errors.password?.message}
+          errorMessage={
+            registerError ? errorHandler(registerError, 'password') : errors.password?.message
+          }
           {...register('password')}
           showPassword
         />
@@ -106,7 +90,6 @@ const RegistrationPage = () => {
           Submit
         </ButtonForm>
       </AuthForm>
-      {registerError && errorHandler(registerError)}
     </>
   );
 };
