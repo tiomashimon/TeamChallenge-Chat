@@ -1,26 +1,52 @@
-import arrowLeft from '../../assets/img/arrow-left.svg';
-import Contact from '../Contact/Contact';
-import SearchByContact from '../SearchByContact/SearchByContact';
-import styles from './SideBar.module.css';
+import { TNavItem } from '../../utils/type';
+import GlobalSVG from '../SVG/GlobalSVG';
+import LogoSVG from '../SVG/LogoSVG';
+import MessageSVG from '../SVG/MessageSVG';
+import ProfileSVG from '../SVG/ProfileSVG';
+import SettingsSVG from '../SVG/SettingsSVG';
+import styles from './Sidebar.module.scss';
 
-const SideBar = () => {
+interface SidebarProps {
+  activeNavItem: string;
+  handleNavItemClick: (navItem: TNavItem) => void;
+}
+
+const Sidebar = ({ activeNavItem, handleNavItemClick }: SidebarProps) => {
   return (
-    <>
-      <nav className={styles.chats_nav}>
-        <img src={arrowLeft} alt="arrow" />
-        <h1 className={styles.nav_title}>Rooms</h1>
-      </nav>
+    <aside className={styles.aside}>
+      <div>
+        <LogoSVG />
+        <hr />
+        <nav className={styles.nav}>
+          <ul className={styles.list}>
+            <li>
+              <MessageSVG
+                active={activeNavItem === 'message'}
+                onClick={() => handleNavItemClick('message')}
+              />
+            </li>
 
-      <div className={styles.box_by_contact}>
-        <SearchByContact />
+            <li>
+              <GlobalSVG
+                active={activeNavItem === 'global'}
+                onClick={() => handleNavItemClick('global')}
+              />
+            </li>
 
-        <div className="contact_list">
-          <Contact />
-          <Contact />
-        </div>
+            <li>
+              <SettingsSVG
+                active={activeNavItem === 'settings'}
+                onClick={() => handleNavItemClick('settings')}
+              />
+            </li>
+          </ul>
+        </nav>
       </div>
-    </>
+      <div>
+        <ProfileSVG />
+      </div>
+    </aside>
   );
 };
 
-export default SideBar;
+export default Sidebar;

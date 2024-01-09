@@ -21,11 +21,11 @@ export const tokenSlice = createSlice({
       return initialState;
     },
     setToken(state, action: PayloadAction<TokenState>) {
-      const currentDate = new Date();
-      const expirationTime = new Date(currentDate.getTime() + 10 * 1000);
+      // const currentDate = new Date();
+      // const expirationTime = new Date(currentDate.getTime() + 10 * 1000);
 
-      Cookies.set('accessToken', action.payload.tokenAccess!, { expires: expirationTime });
-      Cookies.set('refreshToken', action.payload.tokenRefresh!, { expires: expirationTime });
+      Cookies.set('accessToken', action.payload.tokenAccess!, { expires: 1 });
+      Cookies.set('refreshToken', action.payload.tokenRefresh!, { expires: 1 });
       return {
         ...state,
         tokenRefresh: action.payload.tokenRefresh,

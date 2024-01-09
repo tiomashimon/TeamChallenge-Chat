@@ -1,81 +1,32 @@
-import { useEffect, useState } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
-import { useIsVerifiedMutation, useTokenRefreshMutation } from '../../../store/api/authApi';
-import { logoutRememberMe } from '../../../store/reducers/rememberMe';
-import { useAppDispatch, useAppSelector } from '../../../store/store';
-import SideBar from '../../Sidebar/Sidebar';
-import styles from './LayoutChat.module.css';
+/* eslint-disable no-nested-ternary */
+import { useState } from 'react';
+import { Outlet } from 'react-router-dom';
+import withAuthCheck from '../../../utils/HOC';
+import Sidebar from '../../Sidebar/Sidebar';
+import styles from './LayoutChat.module.scss';
+import SectionChat from '../../Sections/SectionChat/SectionChat';
+import SectionGlobal from '../../Sections/SectionGlobal/SectionGlobal';
+import { TNavItem } from '../../../utils/type';
 
-const withAuthCheck = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
-  const AuthCheck = (props: P) => {
-    const navigate = useNavigate();
-    const dispatch = useAppDispatch();
-    const { tokenAccess, tokenRefresh: token } = useAppSelector((state) => state.tokenState);
-    const { rememberMe } = useAppSelector((state) => state.rememberMeState);
-
-    const [isVerified, { isError }] = useIsVerifiedMutation();
-    const [tokenRefresh] = useTokenRefreshMutation();
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-      const checkAccessToken = async () => {
-        if (tokenAccess) {
-          try {
-            await isVerified({ token: tokenAccess });
-            setIsLoading(false);
-            if (isError) {
-              navigate('/signIn');
-            }
-          } catch (error) {
-            navigate('/signIn');
-          }
-        } else {
-          dispatch(logoutRememberMe());
-          navigate('/signIn');
-        }
-      };
-
-      checkAccessToken();
-
-      const timer = setInterval(checkAccessToken, 10000);
-
-      return () => clearInterval(timer);
-    }, [navigate, tokenAccess, isVerified, isError, dispatch]);
-
-    useEffect(() => {
-      if (rememberMe) {
-        const interval = setInterval(() => {
-          if (token) {
-            tokenRefresh({ refresh: token });
-          }
-        }, 5000);
-
-        return () => clearInterval(interval);
-      }
-
-      return undefined;
-    }, [rememberMe, tokenRefresh, token]);
-
-    if (isLoading) {
-      return <div>Loading...</div>;
-    }
-
-    return <WrappedComponent {...props} />;
+const LayoutChat = () => {
+  const [activeNavItem, setActiveNavItem] = useState('message');
+  const handleNavItemClick = (navItem: TNavItem) => {
+    setActiveNavItem(navItem);
   };
-
-  return AuthCheck;
-};
-
-const LayoutChat = ({ ...props }) => {
   return (
-    <main className={styles.chats}>
-      <aside className={`${styles.column_1}`}>
-        <SideBar />
-      </aside>
-      <section className={`${styles.column_2}`}>
-        <div className={styles.container}>
-          <Outlet {...props} />
+    <main className={styles.container}>
+      <Sidebar activeNavItem={activeNavItem} handleNavItemClick={handleNavItemClick} />
+      <section>
+        <div>
+          {activeNavItem === 'message' ? (
+            <SectionGlobal />
+          ) : activeNavItem === 'global' ? (
+            <SectionChat />
+          ) : (
+            'Settings Section'
+          )}
         </div>
+        <Outlet />
       </section>
     </main>
   );

@@ -18,3 +18,5 @@ export type TResponseToken = TypeOf<typeof responseTokenSchema>;
 export type TUserResponseRegister = TypeOf<typeof userResponseRegisterSchema>;
 
 export type TUser = TypeOf<typeof userSchema>;
+
+export type TNavItem = 'message' | 'global' | 'settings';

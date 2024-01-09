@@ -15,8 +15,7 @@ const ButtonForm = ({
 }: IButtonFormProps) => {
   return (
     <button
-      // eslint-disable-next-line react/button-has-type
-      type={type}
+      type={type === 'submit' ? 'submit' : 'button'}
       className={`${styles.btn} ${not_active ? styles.not_active : ''}
       ${margin_block_start ? styles.margin_block_start : ''}`}
     >
