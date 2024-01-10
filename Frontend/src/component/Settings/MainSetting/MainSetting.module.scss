@@ -1,0 +1,35 @@
+.list{
+  & > li{
+    display: flex;
+    align-items: center;
+    margin-block-end: 36px;
+    button{
+      width: 100%;
+      display: flex;
+    }
+    button > span{
+      margin-inline-start: 16px;
+      font-size: 24px;
+    }
+  }
+}
+
+.langItem{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.langContainer{
+  display: flex;
+  align-items: center;
+  font-size: 24px;
+  & > span{
+    margin-inline-start: 16px;
+  }
+}
+
+.lang{
+  font-size: 16px !important;
+  color: $colorPurple;
+}

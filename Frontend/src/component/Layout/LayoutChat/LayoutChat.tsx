@@ -1,32 +1,33 @@
-/* eslint-disable no-nested-ternary */
 import { useState } from 'react';
-import { Outlet } from 'react-router-dom';
 import withAuthCheck from '../../../utils/HOC';
-import Sidebar from '../../Sidebar/Sidebar';
-import styles from './LayoutChat.module.scss';
+import { TNavItem } from '../../../utils/type';
 import SectionChat from '../../Sections/SectionChat/SectionChat';
 import SectionGlobal from '../../Sections/SectionGlobal/SectionGlobal';
-import { TNavItem } from '../../../utils/type';
+import SettingLayout from '../../Settings/SettingLayout';
+import Sidebar from '../../Sidebar/Sidebar';
+import styles from './LayoutChat.module.scss';
 
 const LayoutChat = () => {
-  const [activeNavItem, setActiveNavItem] = useState('message');
+  const [activeNavItem, setActiveNavItem] = useState<TNavItem>('message');
+  const [activeSelect, setActiveSelect] = useState<Exclude<TNavItem, 'settings'>>('message');
+  const [activeSetting, setActiveSetting] = useState(false);
   const handleNavItemClick = (navItem: TNavItem) => {
     setActiveNavItem(navItem);
+    setActiveSetting(navItem === 'settings');
+
+    if (navItem !== 'settings') {
+      const select = navItem === 'global' ? 'global' : 'message';
+      setActiveSelect(select);
+    }
   };
+
   return (
     <main className={styles.container}>
       <Sidebar activeNavItem={activeNavItem} handleNavItemClick={handleNavItemClick} />
-      <section>
-        <div>
-          {activeNavItem === 'message' ? (
-            <SectionGlobal />
-          ) : activeNavItem === 'global' ? (
-            <SectionChat />
-          ) : (
-            'Settings Section'
-          )}
-        </div>
-        <Outlet />
+      <section className={styles.content}>
+        {activeSelect === 'global' && <SectionGlobal />}
+        {activeSelect === 'message' && <SectionChat />}
+        {activeSetting && <SettingLayout />}
       </section>
     </main>
   );

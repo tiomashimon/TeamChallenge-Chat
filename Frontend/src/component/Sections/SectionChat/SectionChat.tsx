@@ -1,5 +1,12 @@
+import { Outlet } from 'react-router-dom';
+
 const SectionChat = () => {
-  return <div>SectionChat</div>;
+  return (
+    <>
+      SectionChat
+      <Outlet />
+    </>
+  );
 };
 
 export default SectionChat;

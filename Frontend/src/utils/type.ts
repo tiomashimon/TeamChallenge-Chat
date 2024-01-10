@@ -20,3 +20,4 @@ export type TUserResponseRegister = TypeOf<typeof userResponseRegisterSchema>;
 export type TUser = TypeOf<typeof userSchema>;
 
 export type TNavItem = 'message' | 'global' | 'settings';
+export type TSettingConfig = 'settings' | 'notification' | 'language' | 'theme' | 'help';

@@ -1,5 +1,5 @@
 const SectionGlobal = () => {
-  return <div>SectionGlobal</div>;
+  return <>SectionGlobal</>;
 };
 
 export default SectionGlobal;
