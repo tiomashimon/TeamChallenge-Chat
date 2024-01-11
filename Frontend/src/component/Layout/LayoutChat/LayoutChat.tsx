@@ -21,13 +21,18 @@ const LayoutChat = () => {
     }
   };
 
+  const handleExitSetting = () => {
+    setActiveNavItem(activeSelect);
+    setActiveSetting(false);
+  };
+
   return (
     <main className={styles.container}>
       <Sidebar activeNavItem={activeNavItem} handleNavItemClick={handleNavItemClick} />
       <section className={styles.content}>
         {activeSelect === 'global' && <SectionGlobal />}
         {activeSelect === 'message' && <SectionChat />}
-        {activeSetting && <SettingLayout />}
+        {activeSetting && <SettingLayout handleExitSetting={handleExitSetting} />}
       </section>
     </main>
   );

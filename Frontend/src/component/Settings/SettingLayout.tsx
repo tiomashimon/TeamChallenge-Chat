@@ -8,7 +8,11 @@ import Notification from './Notification/Notification';
 import styles from './SettingLayout.module.scss';
 import Theme from './Theme/Theme';
 
-const SettingLayout = () => {
+interface ISettingLayoutProps {
+  handleExitSetting: () => void;
+}
+
+const SettingLayout = ({ handleExitSetting }: ISettingLayoutProps) => {
   const [activeSettingConfig, setActiveSettingConfig] = useState<TSettingConfig>('settings');
 
   const handleChangeSettingConfig = (config: TSettingConfig) => {
@@ -16,6 +20,9 @@ const SettingLayout = () => {
   };
 
   const handleBackToSetting = () => {
+    if (activeSettingConfig === 'settings') {
+      handleExitSetting();
+    }
     setActiveSettingConfig('settings');
   };
 
