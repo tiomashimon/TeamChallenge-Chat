@@ -18,7 +18,7 @@ const Language = () => {
       {languages.map((language) => (
         <li key={language}>
           <button type="button" onClick={() => setCurrentLanguage(language)}>
-            <span className={`${styles.lang} ${currentLanguage === language ? styles.active : ''}`}>
+            <span className={`${currentLanguage === language ? styles.active : ''}`}>
               {language}
             </span>
           </button>
