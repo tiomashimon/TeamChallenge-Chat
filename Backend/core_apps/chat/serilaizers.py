@@ -5,6 +5,7 @@ from ..user.serializers import UserSerializer
 
 
 class MessageSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     class Meta:
         model = Message
         fields = "__all__"
@@ -23,7 +24,7 @@ class ChatSerializer(serializers.Serializer):
     created_by = serializers.PrimaryKeyRelatedField(queryset=User.objects.all()) 
     is_alive = serializers.BooleanField(default=True)
     users = UserSerializer(many=True, read_only=True)
-    messages = MessageSerializer(many=True, read_only=True)
+    # messages = MessageSerializer(many=True, read_only=True)
     topic = serializers.PrimaryKeyRelatedField(queryset=ChatTopic.objects.all()) 
     
     def create(self, validated_data):

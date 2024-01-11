@@ -99,6 +99,17 @@ class MessageViewSet(ModelViewSet):
 
         return Response(serializer.data)
     
+    def create(self, request, id):
+        data = request.data
+        data['user'] = request.user.id
+        serializer = MessageSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        print(request.user,123)
+
+        return Response(serializer.data)
+    
 
 
 class ChatTopicSetPagination(PageNumberPagination):
@@ -137,3 +148,13 @@ class TopicViewSet(ModelViewSet):
 
 
 
+
+def index(request):
+    chat_rooms = Chat.objects.all()
+    return render(request, 'chat/index.html', {'chatrooms': chat_rooms})
+
+
+def chatroom(request, room_name):
+    chat = Chat.objects.get(name=room_name)
+    messages = Message.objects.filter(chat=chat)
+    return render(request, 'chat/room.html', {'chatroom': chat, 'messages':messages})

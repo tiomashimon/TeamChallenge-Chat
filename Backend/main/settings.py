@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -36,6 +37,7 @@ APP_DIR = ROOT_DIR / "core_apps"
 # Application definition1
 
 THIRD_PARTY_APPS = [
+    'channels',
     'corsheaders',
     'rest_framework',
     'django_filters',
@@ -116,10 +118,20 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "main.wsgi.application"
 
+ASGI_APPLICATION = 'main.asgi.application'
+
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("redis", 6379)],
+        },
+    },
+}
 # Database
 
 import environ
-import os
 
 env = environ.Env()
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))

@@ -24,5 +24,7 @@ urlpatterns = [
 
     path('<int:id>/message/', message_list, name='message'), 
     path('topics/', topic_list, name='topic'), 
+    path("index/", views.index, name="index"),
+    path("<str:room_name>/", views.chatroom, name="room"),
 ]
 
