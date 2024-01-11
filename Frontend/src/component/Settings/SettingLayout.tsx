@@ -14,16 +14,25 @@ interface ISettingLayoutProps {
 
 const SettingLayout = ({ handleExitSetting }: ISettingLayoutProps) => {
   const [activeSettingConfig, setActiveSettingConfig] = useState<TSettingConfig>('settings');
+  const [fadeOut, setFadeOut] = useState(false);
 
   const handleChangeSettingConfig = (config: TSettingConfig) => {
-    setActiveSettingConfig(config);
+    setFadeOut(true);
+    setTimeout(() => {
+      setActiveSettingConfig(config);
+      setFadeOut(false);
+    }, 200);
   };
 
   const handleBackToSetting = () => {
-    if (activeSettingConfig === 'settings') {
-      handleExitSetting();
-    }
-    setActiveSettingConfig('settings');
+    setFadeOut(true);
+    setTimeout(() => {
+      if (activeSettingConfig === 'settings') {
+        handleExitSetting();
+      }
+      setActiveSettingConfig('settings');
+      setFadeOut(false);
+    }, 200);
   };
 
   const viewHeader = () => {
@@ -61,7 +70,7 @@ const SettingLayout = ({ handleExitSetting }: ISettingLayoutProps) => {
   };
 
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} ${fadeOut ? styles.fadeOut : ''}`}>
       <header className={styles.header}>
         <button type="button" onClick={handleBackToSetting}>
           <img src={arrowLeft} alt="arrowLeft" />
