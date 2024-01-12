@@ -1,12 +1,13 @@
 from rest_framework import serializers
-from .models import Chat, Message, ChatTopic
+from .models import Chat, ChatMessage, ChatTopic
 from ..user.models import User
 from ..user.serializers import UserSerializer
 
 
-class MessageSerializer(serializers.ModelSerializer):
+class ChatMessageSerializer(serializers.ModelSerializer):
+    created_by = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     class Meta:
-        model = Message
+        model = ChatMessage
         fields = "__all__"
 
 
@@ -23,8 +24,10 @@ class ChatSerializer(serializers.Serializer):
     created_by = serializers.PrimaryKeyRelatedField(queryset=User.objects.all()) 
     is_alive = serializers.BooleanField(default=True)
     users = UserSerializer(many=True, read_only=True)
-    messages = MessageSerializer(many=True, read_only=True)
+    # messages = MessageSerializer(many=True, read_only=True)
     topic = serializers.PrimaryKeyRelatedField(queryset=ChatTopic.objects.all()) 
+    photo = serializers.ImageField()
+    max_users = serializers.IntegerField()
     
     def create(self, validated_data):
         return Chat.objects.create(**validated_data)

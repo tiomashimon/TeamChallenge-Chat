@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from rest_framework import generics
-from .models import Chat, Message, ChatTopic
+from .models import Chat, ChatMessage, ChatTopic
 from django.db.models import Prefetch  
 
-from .serilaizers import ChatSerializer, MessageSerializer, ChatTopicSerializer
+from .serilaizers import ChatSerializer, ChatMessageSerializer, ChatTopicSerializer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
@@ -86,16 +86,27 @@ class ChatList(ListAPIView):
     serializer_class = ChatSerializer
 
 
-class MessageViewSet(ModelViewSet):
-    queryset = Message.objects.all()
-    serializer_class = MessageSerializer
+class ChatMessageViewSet(ModelViewSet):
+    queryset = ChatMessage.objects.all()
+    serializer_class = ChatMessageSerializer
 
     # permission_classes = [IsAuthenticated]
     def list(self, request, **kwargs):
         chat_id = kwargs.get('id')
 
-        queryset = Message.objects.filter(chat=chat_id)
-        serializer = MessageSerializer(queryset, many=True)
+        queryset = ChatMessage.objects.filter(chat=chat_id)
+        serializer = ChatMessageSerializer(queryset, many=True)
+
+        return Response(serializer.data)
+    
+    def create(self, request, id):
+        data = request.data
+        data['user'] = request.user.id
+        serializer = ChatMessageSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        print(request.user,123)
 
         return Response(serializer.data)
     
@@ -137,3 +148,13 @@ class TopicViewSet(ModelViewSet):
 
 
 
+
+def index(request):
+    chat_rooms = Chat.objects.all()
+    return render(request, 'chat/index.html', {'chatrooms': chat_rooms})
+
+
+def chatroom(request, room_name):
+    chat = Chat.objects.get(name=room_name)
+    messages = Message.objects.filter(chat=chat)
+    return render(request, 'chat/room.html', {'chatroom': chat, 'messages':messages})
