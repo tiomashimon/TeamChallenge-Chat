@@ -2,7 +2,7 @@ from django.contrib import admin
 from . import views
 from django.urls import path, include
 
-message_list = views.MessageViewSet.as_view(
+message_list = views.ChatMessageViewSet.as_view(
     {
         'get': 'list',
         'post': 'create'
