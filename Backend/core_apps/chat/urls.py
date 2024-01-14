@@ -2,7 +2,7 @@ from django.contrib import admin
 from . import views
 from django.urls import path, include
 
-message_list = views.MessageViewSet.as_view(
+message_list = views.ChatMessageViewSet.as_view(
     {
         'get': 'list',
         'post': 'create'
@@ -24,5 +24,7 @@ urlpatterns = [
 
     path('<int:id>/message/', message_list, name='message'), 
     path('topics/', topic_list, name='topic'), 
+    path("index/", views.index, name="index"),
+    path("<str:room_name>/", views.chatroom, name="room"),
 ]
 

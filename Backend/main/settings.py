@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -35,22 +36,24 @@ APP_DIR = ROOT_DIR / "core_apps"
 
 # Application definition1
 
-THIRD_PARTY_APPS = ['corsheaders', ]
+THIRD_PARTY_APPS = [
+    'channels',
+    'corsheaders',
+    'rest_framework',
+    'django_filters',
+    'rest_framework_simplejwt',
+    'drf_yasg',
+    'django_rest_passwordreset',
+    'celery_progress',
+    'django_celery_beat',]
 
 DJANGO_APPS = [
-    'celery_progress',
-    'django_celery_beat',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    'rest_framework',
-    'django_filters',
-    'rest_framework_simplejwt',
-    'drf_yasg',
-    'django_rest_passwordreset',
 ]
 
 LOCAL_APPS = [
@@ -115,10 +118,20 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "main.wsgi.application"
 
+ASGI_APPLICATION = 'main.asgi.application'
+
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("redis", 6379)],
+        },
+    },
+}
 # Database
 
 import environ
-import os
 
 env = environ.Env()
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
@@ -173,6 +186,11 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+MEDIA_URL = '/media/'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
@@ -208,3 +226,25 @@ DJANGO_REST_PASSWORDRESET_TOKEN_CONFIG = {
 }
 
 DJANGO_REST_MULTITOKENAUTH_RESET_TOKEN_EXPIRY_TIME = 0.1  # - time in hours about how long the token is active (Default: 24)
+
+
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "%(levelname)s %(name)-12s %(asctime)s %(module)s "
+            "%(process)d %(thread)d %(message)s"
+        }
+    },
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
+    },
+    "root": {"level": "INFO", "handlers": ["console"]},
+}
+

@@ -3,6 +3,7 @@ services:
   backend:
     environment:
       - DB_HOST=db
+      - REDIS_URL=redis://redis:6379
     build:
       context: ./Backend/
       dockerfile: ./Docker/local/Dockerfile
