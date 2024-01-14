@@ -1,10 +1,9 @@
 .list{
   & > li{
-    display: flex;
-    align-items: center;
     button{
-      width: 100%;
       display: flex;
+      align-items: center;
+      width: 100%;
     }
     button > span{
       margin-inline-start: 16px;

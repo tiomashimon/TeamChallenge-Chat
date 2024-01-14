@@ -20,10 +20,10 @@ const withAuthCheck = <P extends object>(WrappedComponent: React.ComponentType<P
         if (tokenAccess) {
           try {
             await isVerified({ token: tokenAccess });
-            setIsLoading(false);
             if (isError) {
               navigate('/signIn');
             }
+            setIsLoading(false);
           } catch (error) {
             navigate('/signIn');
           }
