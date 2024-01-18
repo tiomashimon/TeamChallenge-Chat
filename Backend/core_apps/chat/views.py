@@ -1,9 +1,23 @@
 from django.shortcuts import render
 from rest_framework import generics
-from .models import Chat, ChatMessage, ChatTopic
+from .models import (
+    Chat, 
+    ChatMessage, 
+    ChatTopic,
+    Group,
+    GroupMessage,
+    DirectMessage
+)
 from django.db.models import Prefetch  
 
-from .serilaizers import ChatSerializer, ChatMessageSerializer, ChatTopicSerializer
+from .serilaizers import (
+    ChatSerializer,
+    ChatMessageSerializer,
+    ChatTopicSerializer,
+    GroupSerializer,
+    GroupMessageSerializer, 
+    DirectMessageSerializer
+)
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
@@ -149,12 +163,51 @@ class TopicViewSet(ModelViewSet):
 
 
 
-def index(request):
-    chat_rooms = Chat.objects.all()
-    return render(request, 'chat/index.html', {'chatrooms': chat_rooms})
+# def index(request):
+#     chat_rooms = Chat.objects.all()
+#     return render(request, 'chat/index.html', {'chatrooms': chat_rooms})
 
 
-def chatroom(request, room_name):
-    chat = Chat.objects.get(name=room_name)
-    messages = Message.objects.filter(chat=chat)
-    return render(request, 'chat/room.html', {'chatroom': chat, 'messages':messages})
+# def chatroom(request, room_name):
+#     chat = Chat.objects.get(name=room_name)
+#     messages = ChatMessage.objects.filter(chat=chat)
+#     return render(request, 'chat/room.html', {'chatroom': chat, 'messages':messages})
+
+
+
+class DirectMessageViewSet(ModelViewSet):
+    queryset = DirectMessage.objects.all()
+    serializer_class = DirectMessageSerializer
+
+    def create(self, request):
+        serializer = DirectMessageSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+class GroupViewSet(ModelViewSet):
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
+
+    def create(self, request):
+        serializer = GroupSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data)
+
+class GroupMessageViewSet(ModelViewSet):
+    queryset = GroupMessage.objects.all()
+    serializer_class = GroupMessageSerializer
+
+    def create(self, request):
+        data = request.data
+        data['user'] = request.user.id
+        print(data)
+        serializer = GroupMessageSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        print(request.user,123)
+
+        return Response(serializer.data)

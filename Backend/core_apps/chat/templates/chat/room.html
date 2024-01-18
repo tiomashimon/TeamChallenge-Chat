@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ chatroom.name }} Chat</title>
+    <!-- Add Bootstrap CDN link here -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>{{ chatroom.name }} </h1>
+
+        <div id="chat-messages" class="border p-3 mt-3" style="max-height: 700px; overflow-y: scroll;">
+            {% for message in messages %}
+                <strong>{{ message.user.username }}:</strong> {{ message.message_content }} <br>
+            {% endfor %}
+        </div>
+
+        <form method="post" class="mt-3">
+            {% csrf_token %}
+            <div class="input-group">
+                <input id="message-input" type="text" name="message" placeholder="Enter message" class="form-control">
+                <div class="input-group-append">
+                    <button id="send-button" type="submit" class="btn btn-primary">Send</button>
+                </div>
+            </div>
+        </form>
+
+        {{ chatroom.name|json_script:"json-chatroomname" }}
+        {{ request.user.username|json_script:"json-username" }}
+    </div>
+
+    
+<script>
+    const chatRoomName = JSON.parse(document.getElementById('json-chatroomname').textContent)
+    const username = JSON.parse(document.getElementById('json-username').textContent)
+
+    chatSocket = new WebSocket("ws://" + window.location.host + "/ws/chat/" + chatRoomName + "/");
+
+    function scrollToBottom() {
+        const chatMessages = document.getElementById('chat-messages');
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    chatSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        if (data.message) {
+            const html = '<strong>' + data.username + '</strong>' + ' : ' + data.message + "<br>";
+            document.getElementById('chat-messages').innerHTML += html;
+            scrollToBottom();
+        }
+    };
+
+    chatSocket.onclose = function(e) {
+        console.log('Socket closed');
+    };
+
+    document.getElementById('send-button').onclick = function(e) {
+        e.preventDefault();
+        const messageInput = document.getElementById('message-input');
+        const message = messageInput.value;
+
+        chatSocket.send(JSON.stringify({
+            'message': message,
+            'username': username,
+            'room': chatRoomName
+        }));
+
+        messageInput.value = '';
+        scrollToBottom();
+    };
+
+    // Scroll to bottom when the page loads
+    window.onload = function() {
+        scrollToBottom();
+    };
+</script>
+
+</body>
+</html>
