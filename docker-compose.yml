@@ -36,11 +36,24 @@ services:
     networks:
       - my_network
 
-  celery:
+  celery1:
     build:
       context: ./Backend/
       dockerfile: ./Docker/local/Dockerfile
-    command: celery -A main worker -l info
+    command: celery -A main worker -l info -Q queue1
+    volumes:
+      - ./Backend/:/code
+    depends_on:
+      - backend
+      - redis
+    networks:
+      - my_network
+
+  celery2:
+    build:
+      context: ./Backend/
+      dockerfile: ./MyCelery/Dockerfile
+    command: celery -A main worker -l info -Q queue2
     volumes:
       - ./Backend/:/code
     depends_on:
@@ -72,7 +85,8 @@ services:
       - "5555:5555"
     depends_on:
       - backend
-      - celery
+      - celery1
+      - celery2
     networks:
       - my_network
 
