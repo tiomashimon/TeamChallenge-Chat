@@ -1,9 +1,23 @@
 from django.shortcuts import render
 from rest_framework import generics
-from .models import Chat, ChatMessage, ChatTopic
+from .models import (
+    Chat, 
+    ChatMessage, 
+    ChatTopic,
+    Group,
+    GroupMessage,
+    DirectMessage
+)
 from django.db.models import Prefetch  
 
-from .serilaizers import ChatSerializer, ChatMessageSerializer, ChatTopicSerializer
+from .serilaizers import (
+    ChatSerializer,
+    ChatMessageSerializer,
+    ChatTopicSerializer,
+    GroupSerializer,
+    GroupMessageSerializer, 
+    DirectMessageSerializer
+)
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
@@ -22,37 +36,6 @@ from rest_framework.permissions import IsAuthenticated
 
 from django_celery_beat.models import PeriodicTask, IntervalSchedule
 from .tasks import delete_expired_chats
-
-
-# class ChatAPIView(APIView):
-#     def get(self,request):
-#         movies = Chat.objects.all()
-#         return Response({'chat':ChatSerializer(movies, many=True).data})
-
-#     def post(self,request):
-#         serializer = ChatSerializer(data=request.data)
-#         serializer.is_valid(raise_exception=True)
-        
-#         serializer.save()
-
-#         return Response({'Succes':True, 'chat':serializer.data})
-
-#     def put(self,request, *args, **kwargs):
-#         chat_id = kwargs.get('id', None)
-#         if not chat_id:
-#             return Response({'error':'Method PUT not allowed'})
-#         try:
-#             instance = Chat.objects.get(id=chat_id)
-
-#         except:
-#             return Response({'error':'Object does not exists'})
-
-#         serializer = ChatSerializer(data=request.data, instance=instance)
-#         serializer.is_valid(raise_exception=True)
-#         serializer.save()
-
-#         return Response({'Succes':True, 'chat':serializer.data}) 
-
 
 class ChatCreate(CreateAPIView):
     queryset = Chat.objects.all()
@@ -132,29 +115,51 @@ class TopicViewSet(ModelViewSet):
 
 
 
+class DirectMessageViewSet(ModelViewSet):
+    queryset = DirectMessage.objects.all()
+    serializer_class = DirectMessageSerializer
 
-# def create_delete_expired_chats_task():
-#     interval, created = IntervalSchedule.objects.get_or_create(every=1, period=IntervalSchedule.HOURS)
+    def create(self, request):
+        serializer = DirectMessageSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
 
-#     delete_expired_chats_task, created = PeriodicTask.objects.get_or_create(
-#         interval=interval,
-#         name='Delete Expired Chats',
-#         task='chat.tasks.delete_expired_chats'
-#     )
+class GroupViewSet(ModelViewSet):
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
 
-#     delete_expired_chats_task.enabled = True
-#     delete_expired_chats_task.save()
+    def create(self, request):
+        serializer = GroupSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data)
+
+class GroupMessageViewSet(ModelViewSet):
+    queryset = GroupMessage.objects.all()
+    serializer_class = GroupMessageSerializer
+
+    def create(self, request):
+        data = request.data
+        data['user'] = request.user.id
+        print(data)
+        serializer = GroupMessageSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        print(request.user,123)
+
+        return Response(serializer.data)
+    
 
 
 
 
 
 def index(request):
-    chat_rooms = Chat.objects.all()
-    return render(request, 'chat/index.html', {'chatrooms': chat_rooms})
+    return render(request, "chat/index.html")
 
 
-def chatroom(request, room_name):
-    chat = Chat.objects.get(name=room_name)
-    messages = Message.objects.filter(chat=chat)
-    return render(request, 'chat/room.html', {'chatroom': chat, 'messages':messages})
+def room(request, room_name):
+    return render(request, "chat/room.html", {"room_name": room_name})

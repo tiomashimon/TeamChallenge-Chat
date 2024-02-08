@@ -1,6 +1,7 @@
 from django.contrib import admin
 from . import views
 from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 
 message_list = views.ChatMessageViewSet.as_view(
     {
@@ -16,6 +17,13 @@ topic_list = views.TopicViewSet.as_view(
     }
 )
 
+
+router = DefaultRouter()
+router.register('group', views.GroupViewSet, basename='group')
+router.register('group-message', views.GroupMessageViewSet, basename='group-message')
+router.register('direct-message', views.DirectMessageViewSet, basename='direct-message')
+
+
 urlpatterns = [
     path("create/", views.ChatCreate.as_view(), name='chats'),
     path('<int:id>/detail/', views.ChatRetrieve.as_view(), name='chat'),
@@ -24,7 +32,11 @@ urlpatterns = [
 
     path('<int:id>/message/', message_list, name='message'), 
     path('topics/', topic_list, name='topic'), 
-    path("index/", views.index, name="index"),
-    path("<str:room_name>/", views.chatroom, name="room"),
 ]
 
+urlpatterns += router.urls
+urlpatterns += [
+    path('new/', views.index, name='chat-index'),
+    path('new/<str:room_name>/', views.room, name='chat-room'),
+
+]
