@@ -37,7 +37,7 @@ APP_DIR = ROOT_DIR / "core_apps"
 # Application definition1
 
 THIRD_PARTY_APPS = [
-    'channels',
+    'daphne',
     'corsheaders',
     'rest_framework',
     'django_filters',
@@ -61,7 +61,7 @@ LOCAL_APPS = [
     'core_apps.chat',
 ]
 
-INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
+INSTALLED_APPS = LOCAL_APPS + THIRD_PARTY_APPS + DJANGO_APPS
 
 # Swagger
 
@@ -118,17 +118,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "main.wsgi.application"
 
-ASGI_APPLICATION = 'main.asgi.application'
-
-
+ASGI_APPLICATION = "main.asgi.application"
 CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [('redis', 6379)],
-        },
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+             "hosts": [('redis', 6379)],  
+        }
     },
 }
+
 # Database
 
 import environ

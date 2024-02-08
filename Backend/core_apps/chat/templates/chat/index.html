@@ -1,67 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat App</title>
-    <!-- Add Bootstrap CDN link here -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f8f9fa;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        h2 {
-            margin-top: 20px;
-        }
-
-        .chatroom-list {
-            list-style: none;
-            padding: 0;
-        }
-
-        .chatroom-list-item {
-            margin-bottom: 10px;
-        }
-
-        .chatroom-link {
-            color: #007bff;
-            text-decoration: none;
-        }
-    </style>
+    <meta charset="utf-8"/>
+    <title>Chat Rooms</title>
 </head>
 <body>
-    <div class="container mt-5">
-        <h1>Welcome to Chat App</h1>
-        <p>Connect and chat with people around the world.</p>
-
-        <h2>Chat rooms</h2>
-        <ul class="chatroom-list">
-            {% for chatroom in chatrooms %}
-                <li class="chatroom-list-item">
-                    <a href="{% url 'room' chatroom.name %}" class="chatroom-link">{{ chatroom }}</a>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
+    What chat room would you like to enter?<br>
+    <input id="room-name-input" type="text" size="100"><br>
+    <input id="room-name-submit" type="button" value="Enter">
 
     <script>
-        // Your existing script goes here
+        document.querySelector('#room-name-input').focus();
+        document.querySelector('#room-name-input').onkeyup = function(e) {
+            if (e.key === 'Enter') {  // enter, return
+                document.querySelector('#room-name-submit').click();
+            }
+        };
+
+        document.querySelector('#room-name-submit').onclick = function(e) {
+            var roomName = document.querySelector('#room-name-input').value;
+            window.location.pathname = '/chat/' + roomName + '/';
+        };
     </script>
 </body>
 </html>

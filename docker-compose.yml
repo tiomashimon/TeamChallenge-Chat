@@ -49,18 +49,18 @@ services:
     networks:
       - my_network
 
-  celery2:
-    build:
-      context: ./Backend/
-      dockerfile: ./MyCelery/Dockerfile
-    command: celery -A main worker -l info -Q queue2
-    volumes:
-      - ./Backend/:/code
-    depends_on:
-      - backend
-      - redis
-    networks:
-      - my_network
+  # celery2:
+  #   build:
+  #     context: ./Backend/
+  #     dockerfile: ./MyCelery/Dockerfile
+  #   command: celery -A main worker -l info -Q queue2
+  #   volumes:
+  #     - ./Backend/:/code
+  #   depends_on:
+  #     - backend
+  #     - redis
+  #   networks:
+  #     - my_network
 
   celery-beat:
     build:
@@ -86,7 +86,6 @@ services:
     depends_on:
       - backend
       - celery1
-      - celery2
     networks:
       - my_network
 

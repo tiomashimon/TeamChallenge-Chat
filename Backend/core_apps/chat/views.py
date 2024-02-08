@@ -37,37 +37,6 @@ from rest_framework.permissions import IsAuthenticated
 from django_celery_beat.models import PeriodicTask, IntervalSchedule
 from .tasks import delete_expired_chats
 
-
-# class ChatAPIView(APIView):
-#     def get(self,request):
-#         movies = Chat.objects.all()
-#         return Response({'chat':ChatSerializer(movies, many=True).data})
-
-#     def post(self,request):
-#         serializer = ChatSerializer(data=request.data)
-#         serializer.is_valid(raise_exception=True)
-        
-#         serializer.save()
-
-#         return Response({'Succes':True, 'chat':serializer.data})
-
-#     def put(self,request, *args, **kwargs):
-#         chat_id = kwargs.get('id', None)
-#         if not chat_id:
-#             return Response({'error':'Method PUT not allowed'})
-#         try:
-#             instance = Chat.objects.get(id=chat_id)
-
-#         except:
-#             return Response({'error':'Object does not exists'})
-
-#         serializer = ChatSerializer(data=request.data, instance=instance)
-#         serializer.is_valid(raise_exception=True)
-#         serializer.save()
-
-#         return Response({'Succes':True, 'chat':serializer.data}) 
-
-
 class ChatCreate(CreateAPIView):
     queryset = Chat.objects.all()
     serializer_class = ChatSerializer
@@ -146,35 +115,6 @@ class TopicViewSet(ModelViewSet):
 
 
 
-
-# def create_delete_expired_chats_task():
-#     interval, created = IntervalSchedule.objects.get_or_create(every=1, period=IntervalSchedule.HOURS)
-
-#     delete_expired_chats_task, created = PeriodicTask.objects.get_or_create(
-#         interval=interval,
-#         name='Delete Expired Chats',
-#         task='chat.tasks.delete_expired_chats'
-#     )
-
-#     delete_expired_chats_task.enabled = True
-#     delete_expired_chats_task.save()
-
-
-
-
-
-# def index(request):
-#     chat_rooms = Chat.objects.all()
-#     return render(request, 'chat/index.html', {'chatrooms': chat_rooms})
-
-
-# def chatroom(request, room_name):
-#     chat = Chat.objects.get(name=room_name)
-#     messages = ChatMessage.objects.filter(chat=chat)
-#     return render(request, 'chat/room.html', {'chatroom': chat, 'messages':messages})
-
-
-
 class DirectMessageViewSet(ModelViewSet):
     queryset = DirectMessage.objects.all()
     serializer_class = DirectMessageSerializer
@@ -211,3 +151,15 @@ class GroupMessageViewSet(ModelViewSet):
         print(request.user,123)
 
         return Response(serializer.data)
+    
+
+
+
+
+
+def index(request):
+    return render(request, "chat/index.html")
+
+
+def room(request, room_name):
+    return render(request, "chat/room.html", {"room_name": room_name})

@@ -35,8 +35,19 @@ class BaseChat(models.Model):
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     photo = models.ImageField(default='media/defaults/default_chat_image.jpg', upload_to='media/chat/chat_images/')
 
+    def get_online_count(self):
+        return self.users.count()
+
+    def join(self, user):
+        self.users.add(user)
+        self.save()
+
+    def leave(self, user):
+        self.users.remove(user)
+        self.save()
+
     def __str__(self):
-        return self.name
+        return f'{self.name} ({self.get_online_count()})'
 
 class Chat(BaseChat):
     DELETE_TIME_CHOICES = [

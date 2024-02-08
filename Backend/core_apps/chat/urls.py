@@ -32,8 +32,11 @@ urlpatterns = [
 
     path('<int:id>/message/', message_list, name='message'), 
     path('topics/', topic_list, name='topic'), 
-    # path("index/", views.index, name="index"),
-    # path("<str:room_name>/", views.chatroom, name="room"),
 ]
 
 urlpatterns += router.urls
+urlpatterns += [
+    path('new/', views.index, name='chat-index'),
+    path('new/<str:room_name>/', views.room, name='chat-room'),
+
+]
