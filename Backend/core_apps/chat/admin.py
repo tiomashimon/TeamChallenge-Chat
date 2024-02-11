@@ -5,7 +5,8 @@ from .models import (
     ChatTopic, 
     Group, 
     GroupMessage, 
-    # DirectMessage
+    DirectMessage,
+    Direct
     )
 
 
@@ -14,4 +15,5 @@ admin.site.register(ChatMessage)
 admin.site.register(ChatTopic)
 admin.site.register(Group)
 admin.site.register(GroupMessage)
-# admin.site.register(DirectMessage)
+admin.site.register(Direct)
+admin.site.register(DirectMessage)
