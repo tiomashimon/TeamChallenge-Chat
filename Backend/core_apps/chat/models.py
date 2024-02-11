@@ -1,6 +1,7 @@
 from django.db import models
 from core_apps.user.models import User
 from django.conf import settings
+import uuid 
 
 
 class ChatTopic(models.Model):
@@ -27,8 +28,7 @@ class BaseMessage(models.Model):
 class BaseChat(models.Model):
     class Meta:
         abstract=True
-
-
+    id = models.UUIDField(unique=True, default=uuid.uuid4, editable=False, primary_key=True)
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=255, default="There is no description :(")
     created_at = models.DateTimeField(auto_now_add=True)
@@ -63,18 +63,24 @@ class Chat(BaseChat):
 
 class Group(BaseChat):
     users = models.ManyToManyField(User, blank=True, related_name="user_groups")
-    
+
+
+class Direct(BaseChat):
+    user1 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='direct_chats_user1')
+    user2 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='direct_chats_user2')
+
+    def __str__(self):
+        return f'Direct Chat between {self.user1} and {self.user2}'
 
 
 class ChatMessage(BaseMessage):
     chat = models.ForeignKey(Chat, on_delete=models.CASCADE)
 
 class DirectMessage(BaseMessage):
-    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_direct_messages')
-    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_direct_messages')
+    direct_chat = models.ForeignKey(Direct, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"DirectMessage from {self.sender} to {self.receiver}"
+        return f"DirectMessage in {self.direct_chat}"
 
 
 class GroupMessage(BaseMessage):

@@ -37,6 +37,6 @@ urlpatterns = [
 urlpatterns += router.urls
 urlpatterns += [
     path('new/', views.index, name='chat-index'),
-    path('new/<str:room_name>/', views.room, name='chat-room'),
+    path('new/<str:room_name>/', views.room, name='chat'),
 
 ]
