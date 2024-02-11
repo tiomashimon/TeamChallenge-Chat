@@ -5,7 +5,18 @@
     <title>Chat Rooms</title>
 </head>
 <body>
+    Chats
 {% for chat in chats %}
 <a href='{% url 'chat' chat.name %}' >{{ chat.name }}</a>
 {% endfor %}
-</html>
+
+Group
+{% for group in groups %}
+<a href='{% url 'grouping' group.name %}' >{{ group.name }}</a>
+{% endfor %}
+
+{% comment %} Direct
+{% for chat in chats %}
+<a href='{% url 'chat' chat.name %}' >{{ chat.name }}</a>
+{% endfor %}
+</html> {% endcomment %}

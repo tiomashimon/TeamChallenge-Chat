@@ -34,9 +34,11 @@ urlpatterns = [
     path('topics/', topic_list, name='topic'), 
 ]
 
-urlpatterns += router.urls
 urlpatterns += [
     path('new/', views.index, name='chat-index'),
-    path('new/<str:room_name>/', views.room, name='chat'),
+    path('direct/<str:room_name>/', views.room, name='chat'),
+    path('group/<str:room_name>/', views.group, name='grouping'),
 
 ]
+
+urlpatterns += router.urls
