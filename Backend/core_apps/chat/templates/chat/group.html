@@ -41,7 +41,7 @@
             const message = messageInputDom.value;
             chatSocket.send(JSON.stringify({
                 'message': message,
-                'message_type': 'group'  // Здесь указываем тип сообщения
+                'room_type': 'group'  // Здесь указываем тип сообщения
             }));
             messageInputDom.value = '';
         };

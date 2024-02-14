@@ -20,7 +20,7 @@ class BaseMessage(models.Model):
     def __str__(self):
         return self.text_content if self.text_content else 'Photo'
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    text_content = models.TextField(null=True, blank=True)
+    text_content = models.CharField(max_length=1000, null=True, blank=True)
     image_content = models.ImageField(null=True, blank=True, upload_to='media/chat/message_images/')
     created_at = models.DateTimeField(auto_now_add=True)
     replied_to = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
