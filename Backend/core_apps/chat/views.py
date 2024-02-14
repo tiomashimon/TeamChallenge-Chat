@@ -159,9 +159,14 @@ class GroupMessageViewSet(ModelViewSet):
 
 def index(request):
     chats = Chat.objects.all()
-    return render(request, "chat/index.html", {'chats':chats})
+    groups = Group.objects.all()
+    return render(request, "chat/index.html", {'chats':chats, 'groups':groups})
 
 
 def room(request, room_name):
     chat = Chat.objects.filter(name=room_name).first()
     return render(request, "chat/room.html", {"chat": chat})
+
+def group(request, room_name):
+    group = Group.objects.filter(name=room_name).first()
+    return render(request, "chat/group.html", {"chat": group})

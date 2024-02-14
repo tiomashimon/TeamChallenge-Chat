@@ -5,12 +5,14 @@
     <title>Chat Room</title>
 </head>
 <body>
-    <textarea id="chat-log" cols="100" rows="20"></textarea><br>
+    <div id="chat-log"></div><br>
     <input id="chat-message-input" type="text" size="100"><br>
     <input id="chat-message-submit" type="button" value="Send">
+    <input id="image-input" type="file">
     {{ chat.id|json_script:"room-name" }}
     <script>
         const roomName = JSON.parse(document.getElementById('room-name').textContent);
+        const chatLog = document.getElementById('chat-log');
 
         const chatSocket = new WebSocket(
             'ws://'
@@ -22,7 +24,12 @@
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
-            document.querySelector('#chat-log').value += (data.message + '\n');
+            if (data.message) {
+                chatLog.innerHTML += (data.message + '<br>');
+            }
+            if (data.image) {
+                chatLog.innerHTML += ('<img src="' + data.image + '" /><br>');
+            }
         };
 
         chatSocket.onclose = function(e) {
@@ -39,10 +46,39 @@
         document.querySelector('#chat-message-submit').onclick = function(e) {
             const messageInputDom = document.querySelector('#chat-message-input');
             const message = messageInputDom.value;
-            chatSocket.send(JSON.stringify({
-                'message': message
-            }));
+            const fileInputDom = document.querySelector('#image-input');
+            const file = fileInputDom.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const image = event.target.result;
+                    chatSocket.send(JSON.stringify({
+                        'message': message,
+                        'image': image,
+                        'room_type': 'chat'
+                    }));
+                };
+                reader.readAsDataURL(file);
+            } else {
+                chatSocket.send(JSON.stringify({
+                    'message': message,
+                    'room_type': 'chat'
+                }));
+            }
             messageInputDom.value = '';
+        };
+
+        document.querySelector('#image-input').onchange = function(e) {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const image = event.target.result;
+                chatSocket.send(JSON.stringify({
+                    'image': image,
+                    'room_type': 'chat'
+                }));
+            };
+            reader.readAsDataURL(file);
         };
     </script>
 </body>
