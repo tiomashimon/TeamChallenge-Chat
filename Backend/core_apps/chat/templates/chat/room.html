@@ -10,10 +10,12 @@
     <input id="chat-message-submit" type="button" value="Send">
     <input id="image-input" type="file">
     {{ chat.id|json_script:"room-name" }}
+    <form id="image-upload-form" enctype="multipart/form-data">
+        {% csrf_token %}
+    </form>
     <script>
         const roomName = JSON.parse(document.getElementById('room-name').textContent);
         const chatLog = document.getElementById('chat-log');
-
         const chatSocket = new WebSocket(
             'ws://'
             + window.location.host
@@ -38,48 +40,46 @@
 
         document.querySelector('#chat-message-input').focus();
         document.querySelector('#chat-message-input').onkeyup = function(e) {
-            if (e.key === 'Enter') {  // enter, return
-                document.querySelector('#chat-message-submit').click();
+            if (e.key === 'Enter') {
+                sendMessage();
             }
         };
 
         document.querySelector('#chat-message-submit').onclick = function(e) {
-            const messageInputDom = document.querySelector('#chat-message-input');
-            const message = messageInputDom.value;
-            const fileInputDom = document.querySelector('#image-input');
-            const file = fileInputDom.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const image = event.target.result;
-                    chatSocket.send(JSON.stringify({
-                        'message': message,
-                        'image': image,
-                        'room_type': 'chat'
-                    }));
-                };
-                reader.readAsDataURL(file);
-            } else {
-                chatSocket.send(JSON.stringify({
-                    'message': message,
-                    'room_type': 'chat'
-                }));
-            }
-            messageInputDom.value = '';
+            sendMessage();
         };
 
         document.querySelector('#image-input').onchange = function(e) {
             const file = e.target.files[0];
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                const image = event.target.result;
-                chatSocket.send(JSON.stringify({
-                    'image': image,
-                    'room_type': 'chat'
-                }));
-            };
-            reader.readAsDataURL(file);
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('chat_type', 'chat');
+            const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            formData.append('csrfmiddlewaretoken', csrftoken);
+            fetch('/api/chat/save_image/', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.querySelector('#chat-message-input').dataset.photoUrl = data.file_url;
+            })
+            .catch(error => console.error('Error:', error));
         };
+
+        function sendMessage() {
+            const messageInputDom = document.querySelector('#chat-message-input');
+            const message = messageInputDom.value;
+            const photoUrl = messageInputDom.dataset.photoUrl || '';
+            console.log(photoUrl)
+            chatSocket.send(JSON.stringify({
+                'message': message,
+                'photo': photoUrl,
+                'room_type': 'chat'
+            }));
+            messageInputDom.value = '';
+            messageInputDom.dataset.photoUrl = '';
+        }
     </script>
 </body>
 </html>

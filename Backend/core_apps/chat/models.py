@@ -9,7 +9,7 @@ class ChatTopic(models.Model):
         return self.title
         
     title = models.CharField(max_length=255)
-    photo = models.ImageField(default='media/defaults/default_topic_image.jpg', upload_to='media/chat/topic_images/')
+    photo = models.ImageField(default='defaults/default_topic_image.jpg', upload_to='chat/topic_images/')
 
 
 class BaseMessage(models.Model):
@@ -21,7 +21,7 @@ class BaseMessage(models.Model):
         return self.text_content if self.text_content else 'Photo'
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     text_content = models.CharField(max_length=1000, null=True, blank=True)
-    image_content = models.ImageField(null=True, blank=True, upload_to='media/chat/message_images/')
+    image_content = models.ImageField(null=True, blank=True, upload_to='chat/message_images/', max_length=255 )
     created_at = models.DateTimeField(auto_now_add=True)
     replied_to = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
 
@@ -33,7 +33,7 @@ class BaseChat(models.Model):
     description = models.CharField(max_length=255, default="There is no description :(")
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
-    photo = models.ImageField(default='media/defaults/default_chat_image.jpg', upload_to='media/chat/chat_images/')
+    photo = models.ImageField(default='defaults/default_chat_image.jpg', upload_to='chat/chat_images/', max_length=255)
 
     def get_online_count(self):
         return self.users.count()

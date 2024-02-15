@@ -32,6 +32,7 @@ urlpatterns = [
 
     path('<int:id>/message/', message_list, name='message'), 
     path('topics/', topic_list, name='topic'), 
+    path('save_image/', views.upload_file, name='save-image')
 ]
 
 urlpatterns += [

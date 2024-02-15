@@ -33,9 +33,13 @@ from rest_framework.generics import (
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 
-
 from django_celery_beat.models import PeriodicTask, IntervalSchedule
 from .tasks import delete_expired_chats
+
+from django.http import JsonResponse
+from django.conf import settings
+from .tasks import save_file_async
+import os
 
 class ChatCreate(CreateAPIView):
     queryset = Chat.objects.all()
@@ -154,6 +158,24 @@ class GroupMessageViewSet(ModelViewSet):
     
 
 
+def upload_file(request):
+    if request.method == 'POST' and request.FILES.get('file'):
+        uploaded_file = request.FILES['file']
+        chat_type = request.POST.get('chat_type', '')  
+        
+        chat_type_directory = os.path.join(settings.MEDIA_ROOT, chat_type, f'{chat_type}_images')
+        os.makedirs(chat_type_directory, exist_ok=True)
+        
+        file_path = os.path.join(chat_type_directory, uploaded_file.name)
+        with open(file_path, 'wb') as destination:
+            for chunk in uploaded_file.chunks():
+                destination.write(chunk)
+                
+        file_url = os.path.join(chat_type, f'{chat_type}_images', uploaded_file.name)
+        
+        return JsonResponse({'file_url': file_url, 'chat_type': chat_type})
+    
+    return JsonResponse({'error': 'No file found'})
 
 
 
