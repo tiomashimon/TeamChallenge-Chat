@@ -40,6 +40,7 @@ from django.http import JsonResponse
 from django.conf import settings
 from .tasks import save_file_async
 import os
+from main.settings import client
 
 class ChatCreate(CreateAPIView):
     queryset = Chat.objects.all()
@@ -178,6 +179,26 @@ def upload_file(request):
     return JsonResponse({'error': 'No file found'})
 
 
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
+def chatbot_view(request):
+    if request.method == 'POST':
+        user_message = request.POST['message']
+        chat_completion = client.chat.completions.create(
+        messages=[
+            {
+                "role": "user",
+                "content": f"{user_message}",
+            }
+        ],
+        model="gpt-3.5-turbo",
+        )
+
+        message = chat_completion.choices[0].message.content
+        return JsonResponse({'message':message})
+    else:
+        return render(request, 'chat/chatgpt.html')
 
 def index(request):
     chats = Chat.objects.all()
