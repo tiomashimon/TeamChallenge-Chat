@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 from datetime import timedelta
+from openai import OpenAI
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -247,3 +248,7 @@ LOGGING = {
     "root": {"level": "INFO", "handlers": ["console"]},
 }
 
+OPENAI_API_KEY = env('OPENAI_API_KEY')
+client = OpenAI(
+    api_key=OPENAI_API_KEY,
+)
