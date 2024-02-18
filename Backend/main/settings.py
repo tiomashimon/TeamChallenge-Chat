@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 from datetime import timedelta
 from openai import OpenAI
+import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -124,14 +125,13 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-             "hosts": [('redis', 6379)],  
+            "hosts": [('redis', 6379)],
         }
     },
 }
 
 # Database
 
-import environ
 
 env = environ.Env()
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
@@ -225,8 +225,8 @@ DJANGO_REST_PASSWORDRESET_TOKEN_CONFIG = {
     }
 }
 
-DJANGO_REST_MULTITOKENAUTH_RESET_TOKEN_EXPIRY_TIME = 0.1  # - time in hours about how long the token is active (Default: 24)
-
+# - time in hours about how long the token is active (Default: 24)
+DJANGO_REST_MULTITOKENAUTH_RESET_TOKEN_EXPIRY_TIME = 0.1
 
 
 LOGGING = {

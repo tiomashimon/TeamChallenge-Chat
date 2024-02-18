@@ -2,9 +2,8 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from .models import Chat, Direct, Group, ChatMessage, DirectMessage, GroupMessage
-from ..user.models import User
 
- 
+
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.room_name = self.scope["url_route"]["kwargs"]["room_uuid"]
@@ -19,8 +18,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        message = text_data_json.get('message')  
-        photo = text_data_json.get('photo') 
+        message = text_data_json.get('message')
+        photo = text_data_json.get('photo')
         print('================================>', photo)
 
         room_type = text_data_json.get("room_type")
@@ -49,16 +48,16 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def save_chat_message(self, chat, user, message=None, photo=None):
-        context = {'type':'chat_message'}
+        context = {'type': 'chat_message'}
         if photo and message:
             ChatMessage.objects.create(chat=chat, text_content=message, image_content=photo, created_by=user)
             context['message'] = message
             context['photo'] = photo
         elif message:
-            ChatMessage.objects.create(chat=chat, text_content=message,created_by=user)
+            ChatMessage.objects.create(chat=chat, text_content=message, created_by=user)
             context['message'] = message
         elif photo:
-            ChatMessage.objects.create(chat=chat, image_content=photo,created_by=user)
+            ChatMessage.objects.create(chat=chat, image_content=photo, created_by=user)
             context['photo'] = photo
         self.channel_layer.group_send(
             self.room_group_name, context
@@ -72,10 +71,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
             context['message'] = message
             context['photo'] = photo
         elif message:
-            DirectMessage.objects.create(direct=direct, text_content=message,created_by=user)
+            DirectMessage.objects.create(direct=direct, text_content=message, created_by=user)
             context['message'] = message
         elif photo:
-            DirectMessage.objects.create(direct=direct, image_content=photo,created_by=user)
+            DirectMessage.objects.create(direct=direct, image_content=photo, created_by=user)
             context['photo'] = photo
         self.channel_layer.group_send(
             self.room_group_name, context
@@ -89,10 +88,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
             context['message'] = message
             context['photo'] = photo
         elif message:
-            GroupMessage.objects.create(group=group, text_content=message,created_by=user)
+            GroupMessage.objects.create(group=group, text_content=message, created_by=user)
             context['message'] = message
         elif photo:
-            GroupMessage.objects.create(group=group, image_content=photo,created_by=user)
+            GroupMessage.objects.create(group=group, image_content=photo, created_by=user)
             context['photo'] = photo
         self.channel_layer.group_send(
             self.room_group_name, context

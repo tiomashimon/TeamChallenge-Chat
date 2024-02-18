@@ -1,10 +1,10 @@
 from rest_framework import serializers
 from .models import (
-    Chat, 
-    ChatMessage, 
+    Chat,
+    ChatMessage,
     ChatTopic,
-    Group, 
-    GroupMessage, 
+    Group,
+    GroupMessage,
     DirectMessage
 )
 from ..user.models import User
@@ -13,6 +13,7 @@ from ..user.serializers import UserSerializer
 
 class ChatMessageSerializer(serializers.ModelSerializer):
     created_by = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+
     class Meta:
         model = ChatMessage
         fields = "__all__"
@@ -26,19 +27,18 @@ class ChatSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     name = serializers.CharField(max_length=50)
     deletion_time = serializers.ChoiceField(
-                            choices = DELETE_TIME_CHOICES)
+        choices=DELETE_TIME_CHOICES)
     created_at = serializers.DateTimeField(read_only=True)
-    created_by = serializers.PrimaryKeyRelatedField(queryset=User.objects.all()) 
+    created_by = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     is_alive = serializers.BooleanField(default=True)
     users = UserSerializer(many=True, read_only=True)
     # messages = MessageSerializer(many=True, read_only=True)
-    topic = serializers.PrimaryKeyRelatedField(queryset=ChatTopic.objects.all()) 
+    topic = serializers.PrimaryKeyRelatedField(queryset=ChatTopic.objects.all())
     photo = serializers.ImageField()
     max_users = serializers.IntegerField()
-    
+
     def create(self, validated_data):
         return Chat.objects.create(**validated_data)
-
 
     def update(self, instance, validated_data):
         user_id = validated_data.get('user_id')
@@ -47,13 +47,10 @@ class ChatSerializer(serializers.Serializer):
             user = User.objects.get(id=user_id)
 
             instance.users.add(user)
-                
 
         instance.save()
 
         return instance
-
-
 
 
 class ChatTopicSerializer(serializers.Serializer):
@@ -70,19 +67,19 @@ class GroupSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=50)
     description = serializers.CharField(max_length=50)
     created_at = serializers.DateTimeField(read_only=True)
-    created_by = serializers.PrimaryKeyRelatedField(queryset=User.objects.all()) 
+    created_by = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     users = UserSerializer(many=True, read_only=True)
     photo = serializers.ImageField()
 
-    
     def create(self, validated_data):
         return Group.objects.create(**validated_data)
+
 
 class GroupMessageSerializer(serializers.Serializer):
     class Meta:
         fields = ('__all__')
         model = GroupMessage
-    
+
     def create(validated_data):
         return GroupMessage.objects.create(**validated_data)
 
@@ -94,6 +91,6 @@ class DirectMessageSerializer(serializers.Serializer):
     replied_to = serializers.PrimaryKeyRelatedField(queryset=DirectMessage.objects.all())
     sender = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     receiver = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
-    
+
     def create(self, validated_data):
         return DirectMessage.objects.create(**validated_data)

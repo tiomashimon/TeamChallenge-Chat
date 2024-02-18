@@ -1,13 +1,7 @@
-import jwt
-from django.contrib.auth import login, logout
-from django.http import JsonResponse
+
 import django_filters
 from rest_framework import status, generics
-from rest_framework.authentication import SessionAuthentication
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.generics import ListAPIView
-from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny, BasePermission
-from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -105,4 +99,3 @@ class ChangePasswordView(generics.UpdateAPIView):
     queryset = User.objects.all()
     permission_classes = [IsAuthenticated]
     serializer_class = ChangePasswordSerializer
-
