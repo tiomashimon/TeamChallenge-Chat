@@ -1,13 +1,13 @@
 from django.contrib import admin
 from .models import (
     Chat,
-    ChatMessage, 
-    ChatTopic, 
-    Group, 
-    GroupMessage, 
+    ChatMessage,
+    ChatTopic,
+    Group,
+    GroupMessage,
     DirectMessage,
     Direct
-    )
+)
 
 
 admin.site.register(Chat)

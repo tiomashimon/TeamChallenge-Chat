@@ -1,33 +1,33 @@
 from django.db import models
 from core_apps.user.models import User
 from django.conf import settings
-import uuid 
+import uuid
 
 
 class ChatTopic(models.Model):
     def __str__(self):
         return self.title
-        
+
     title = models.CharField(max_length=255)
     photo = models.ImageField(default='defaults/default_topic_image.jpg', upload_to='chat/topic_images/')
 
 
 class BaseMessage(models.Model):
     class Meta:
-        abstract=True
-
+        abstract = True
 
     def __str__(self):
         return self.text_content if self.text_content else 'Photo'
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     text_content = models.CharField(max_length=1000, null=True, blank=True)
-    image_content = models.ImageField(null=True, blank=True, upload_to='chat/message_images/', max_length=255 )
+    image_content = models.ImageField(null=True, blank=True, upload_to='chat/message_images/', max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     replied_to = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
 
+
 class BaseChat(models.Model):
     class Meta:
-        abstract=True
+        abstract = True
     id = models.UUIDField(unique=True, default=uuid.uuid4, editable=False, primary_key=True)
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=255, default="There is no description :(")
@@ -48,6 +48,7 @@ class BaseChat(models.Model):
 
     def __str__(self):
         return f'{self.name} ({self.get_online_count()})'
+
 
 class Chat(BaseChat):
     DELETE_TIME_CHOICES = [
@@ -75,6 +76,7 @@ class Direct(BaseChat):
 
 class ChatMessage(BaseMessage):
     chat = models.ForeignKey(Chat, on_delete=models.CASCADE)
+
 
 class DirectMessage(BaseMessage):
     direct_chat = models.ForeignKey(Direct, on_delete=models.CASCADE)
