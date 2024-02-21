@@ -1,0 +1,31 @@
+<form id="chatbot-form">
+    <input type="text" id="user-message" name="message" placeholder="Enter your message">
+    <button type="submit">Send</button>
+</form>
+
+<div id="chat-log"></div>
+ 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#chatbot-form').submit(function(e) {
+            e.preventDefault();
+
+            var userMessage = $('#user-message').val();
+
+            $.ajax({
+                url: '',
+                type: 'POST',
+                data: {
+                    message: userMessage
+                },
+                dataType: 'json',
+                success: function(response) {
+                    var chatLog = $('#chat-log');
+                    chatLog.append('<div class="chat-message">ChatGPT: ' + response.message + '</div>'); // Изменение здесь
+                    $('#user-message').val('');
+                }
+            });
+        });
+    });
+</script>
